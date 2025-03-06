@@ -49,9 +49,7 @@ export default async function SettingPage() {
                   Add an extra layer of security to your account
                 </p>
               </div>
-              <TwoFactorToggle
-                isTwoFactorEnabled={!!session.user?.twoFactorEnabled}
-              />
+              <TwoFactorToggle userId={session.user.id} />
             </div>
           </CardContent>
         </Card>
