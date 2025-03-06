@@ -2,24 +2,24 @@ import { Metadata } from "next";
 
 export const SiteConfig: Metadata = {
   title: {
-    template: "%s | Next starter",
-    default: "Your Product - Feature rich Next.js starter",
+    template: "%s | [Your Site Name]",
+    default: "[Your Site Name] - Add a feature-rich description here",
   },
-  description: "A comprehensive description of your product",
-  metadataBase: new URL("https://next-start.yaredyilma.dev"),
+  description: "[Add a comprehensive description of your product]",
+  metadataBase: new URL("https://example.com"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://next-start.yaredyilma.dev",
-    title: "Next starter",
-    description: "A comprehensive description of your product",
-    siteName: "Next starter",
+    url: "[Your Site URL]",
+    title: "[Your Site Name]",
+    description: "[Add a comprehensive description of your product]",
+    siteName: "[Your Site Name]",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Your Product",
-    description: "A feature rich Next.js starter template",
-    creator: "@yourusername",
+    title: "[Your Product Name]",
+    description: "[Add a feature-rich description of your product]",
+    creator: "[Your Twitter Username]",
   },
   robots: {
     index: true,

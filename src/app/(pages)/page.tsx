@@ -15,7 +15,7 @@ export default function Home() {
           A minimal template to kickstart your Next.js projects.
         </p>
         <div className="flex justify-center gap-4">
-          <Link href="https://github.com/yaredow/nextjs-starter-template">
+          <Link href="https://next-start.yaredyilma.dev">
             <Button size="lg" className="rounded-full">
               Get Started
             </Button>
