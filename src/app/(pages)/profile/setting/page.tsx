@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { UpdatePasswordForm } from "@/modules/auth/ui/components/update-password-form";
 import { TwoFactorToggle } from "@/modules/auth/ui/components/two-factor-toggle";
-import { HydrateClient, trpc } from "@/trpc/server";
 
 export default async function SettingPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -19,8 +18,6 @@ export default async function SettingPage() {
   if (!session) {
     redirect("/login");
   }
-
-  void trpc.users.getUser.prefetch({ id: session.user.id });
 
   return (
     <div className="mx-auto w-full max-w-4xl py-8">
@@ -38,6 +35,7 @@ export default async function SettingPage() {
           </CardContent>
         </Card>
 
+        {/* Security section with 2FA toggle */}
         <Card>
           <CardHeader>
             <CardTitle>Security</CardTitle>
@@ -51,9 +49,7 @@ export default async function SettingPage() {
                   Add an extra layer of security to your account
                 </p>
               </div>
-              <HydrateClient>
-                <TwoFactorToggle userId={session.user.id} />
-              </HydrateClient>
+              <TwoFactorToggle userId={session.user.id} />
             </div>
           </CardContent>
         </Card>

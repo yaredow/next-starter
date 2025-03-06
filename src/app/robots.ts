@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { SiteConfig } from "@/configs/site.config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: ["/"],
       disallow: ["/search?q="],
     },
-    sitemap: ["https://next-start.yaredyilma.dev"],
+    sitemap: [`${SiteConfig.metadataBase}/sitemap.xml`],
   };
 }

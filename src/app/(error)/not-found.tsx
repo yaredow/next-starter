@@ -8,7 +8,7 @@ export function NotFound() {
   const router = useRouter();
 
   return (
-    <div className="flex w-full items-center justify-center bg-white text-center dark:bg-background">
+    <div className="flex min-h-screen w-full items-center justify-center bg-white text-center dark:bg-background">
       <div className="flex-col items-center justify-center dark:text-gray-100 md:flex">
         <div className="relative">
           <h1 className="select-none text-[150px] font-bold text-muted-foreground/20">

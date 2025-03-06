@@ -14,11 +14,6 @@ export const Header = async () => {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Next-starter</h1>
         <div className="flex items-center gap-x-4">
-          <Link href="https://github.com/yaredow/nextjs-starter-template">
-            <Button variant="ghost" size="icon">
-              <Icons.gitHub className="size-6" />
-            </Button>
-          </Link>
           {!session && <ThemeToggle />}
           {session ? (
             <UserButton user={session.user} />
