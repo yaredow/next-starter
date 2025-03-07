@@ -4,12 +4,20 @@ import { UserAuthForm } from "@/modules/auth/ui/components/user-auth-form";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
 import { cn } from "@/lib/utils";
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Login",
 };
 
-export default function loginpage() {
+export default async function loginpage() {
+  const session = await getSession();
+
+  if (session) {
+    redirect("/");
+  }
+
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <Link

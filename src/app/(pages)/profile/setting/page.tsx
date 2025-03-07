@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/card";
 import { UpdatePasswordForm } from "@/modules/auth/ui/components/update-password-form";
 import { TwoFactorToggle } from "@/modules/auth/ui/components/two-factor-toggle";
+import { getSession } from "@/lib/session";
 
 export default async function SettingPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
 
   if (!session) {
     redirect("/login");

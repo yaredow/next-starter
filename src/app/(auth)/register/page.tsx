@@ -4,13 +4,21 @@ import Link from "next/link";
 import { UserAuthForm } from "@/modules/auth/ui/components/user-auth-form";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Create an account",
   description: "Create an account to get started.",
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const session = await getSession();
+
+  if (session) {
+    redirect("/");
+  }
+
   return (
     <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link

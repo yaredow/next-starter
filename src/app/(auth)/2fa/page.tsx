@@ -1,14 +1,13 @@
 import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
 import { TwoFactorForm } from "@/modules/auth/ui/components/two-factor-form";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 const TwoFactorPage = async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
 
   if (session) {
     redirect("/");
