@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { Shield } from "lucide-react";
-import { useState } from "react";
+import { Loader2, Shield } from "lucide-react";
+import { Suspense, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
@@ -34,10 +34,14 @@ import {
 import { TwoFactorFormSchema, TwoFactorFormValues } from "../../schema";
 import { tryCatch } from "@/lib/try-catch";
 import { toast } from "sonner";
+import { ErrorBoundary } from "react-error-boundary";
+import { trpc } from "@/trpc/client";
 
-interface TwoFactorFormProps {}
+interface TwoFactorFormProps {
+  userId: string | undefined;
+}
 
-export function TwoFactorForm({}: TwoFactorFormProps) {
+export function TwoFactorForm({ userId }: TwoFactorFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 

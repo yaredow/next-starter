@@ -3,15 +3,23 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { TwoFactorForm } from "@/modules/auth/ui/components/two-factor-form";
+import { TwoFactorToggle } from "@/modules/auth/ui/components/two-factor-toggle";
+import { HydrateClient, trpc } from "@/trpc/server";
 import { getSession } from "@/lib/session";
 
 const TwoFactorPage = async () => {
-  const session = await getSession();
+  const sessionData = await getSession();
+  console.log({ sessionData });
 
-  if (session) {
+  if (!sessionData) {
     redirect("/");
   }
+
+  if (sessionData.user.twoFactorEnabled) {
+    redirect("/");
+  }
+
+  void trpc.users.getUser.prefetch({ id: sessionData.user.id });
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-6">
@@ -37,7 +45,9 @@ const TwoFactorPage = async () => {
         </div>
 
         <div className="w-full">
-          <TwoFactorForm />
+          <HydrateClient>
+            <TwoFactorToggle userId={sessionData.user.id} />
+          </HydrateClient>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             <span className="mr-1">Having trouble?</span>
             <Link

@@ -1,12 +1,13 @@
 import { headers } from "next/headers";
 import { auth } from "./auth";
+import { session } from "../../auth-schema";
 
 export const getSession = async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const sessionData = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) {
+  if (!sessionData?.session) {
     return null;
   }
 
-  return session;
+  return sessionData;
 };

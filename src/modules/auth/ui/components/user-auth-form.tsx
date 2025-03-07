@@ -72,7 +72,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         onResponse: () => setIsLoading(false),
         onError: (ctx) => {
           toast("Authentication failed", {
-            description: "Something went wrong. Please try again!",
+            description: ctx.error.message,
           });
         },
         onSuccess: async (ctx) => {

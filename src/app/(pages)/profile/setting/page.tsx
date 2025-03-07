@@ -11,10 +11,9 @@ import {
 } from "@/components/ui/card";
 import { UpdatePasswordForm } from "@/modules/auth/ui/components/update-password-form";
 import { TwoFactorToggle } from "@/modules/auth/ui/components/two-factor-toggle";
-import { getSession } from "@/lib/session";
 
 export default async function SettingPage() {
-  const session = await getSession();
+  const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
     redirect("/login");
@@ -50,7 +49,9 @@ export default async function SettingPage() {
                   Add an extra layer of security to your account
                 </p>
               </div>
-              <TwoFactorToggle userId={session.user.id} />
+              <TwoFactorToggle
+                isTwoFactorEnabled={!!session.user?.twoFactorEnabled}
+              />
             </div>
           </CardContent>
         </Card>

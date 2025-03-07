@@ -16,6 +16,7 @@ export const userRouter = createTRPCRouter({
     )
     .query(async ({ ctx }) => {
       const { userId: id } = ctx;
+
       if (!id) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
