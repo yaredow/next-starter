@@ -1,8 +1,10 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { betterAuth } from "better-auth";
+import Stripe from "stripe";
 
 import TwoFactorEmail from "@/emails/2fa-verification-email";
+import { stripe } from "@better-auth/stripe";
 import { db } from "@/db";
 import {
   account,
@@ -16,9 +18,10 @@ import { hashPassword, verifyPassword } from "./utils";
 import { tryCatch } from "./try-catch";
 import { resend } from "./resend";
 
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
 export const auth = betterAuth({
   appName: "Next start",
-
   emailAndPassword: {
     enabled: true,
     password: {
@@ -67,6 +70,11 @@ export const auth = betterAuth({
           }
         },
       },
+    }),
+    stripe({
+      stripeClient,
+      stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+      createCustomerOnSignUp: true,
     }),
   ],
 });
