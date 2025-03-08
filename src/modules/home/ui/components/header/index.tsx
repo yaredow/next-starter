@@ -1,13 +1,17 @@
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Icons } from "@/components/shared/icons";
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+
 import UserButton from "@/modules/auth/ui/components/user-button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/session";
 
 export const Header = async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
     <header className="border-b px-12 py-4" data-testid="side-header">

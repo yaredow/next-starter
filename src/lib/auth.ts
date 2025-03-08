@@ -2,6 +2,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { betterAuth } from "better-auth";
 
+import { handleStripeEvents } from "@/modules/subscription/utils/process-event";
 import TwoFactorEmail from "@/emails/2fa-verification-email";
 import { stripe } from "@better-auth/stripe";
 import { db } from "@/db";
@@ -18,8 +19,6 @@ import { hashPassword, verifyPassword } from "./utils";
 import { stripeClient } from "./stripe";
 import { tryCatch } from "./try-catch";
 import { resend } from "./resend";
-import { projectHmrEvents } from "next/dist/build/swc/generated-native";
-import { handleStripeEvents } from "@/modules/stripe/utils/process-event";
 
 export const auth = betterAuth({
   appName: "Next start",

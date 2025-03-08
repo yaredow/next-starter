@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
-import { StripeSuccess } from "@/modules/stripe/ui/components/stripe-success";
+import { StripeSuccess } from "@/modules/subscription/ui/components/stripe-success";
 import { trpc } from "@/trpc/server";
 import { auth } from "@/lib/auth";
 
