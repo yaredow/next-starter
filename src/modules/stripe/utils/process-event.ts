@@ -1,7 +1,7 @@
 import { Stripe } from "stripe";
 
 import { tryCatch } from "@/lib/try-catch";
-import { stripe } from "@/lib/stripe";
+import { stripeClient } from "@/lib/stripe";
 
 import { syncStripeDataToDatabase } from "./sync-stripe-data";
 import { allowedEvents } from "../constants";
@@ -18,7 +18,7 @@ async function getCustomerId(session: any) {
 
 async function processCheckoutSessionCompleted(event: any) {
   const { data: session, error } = await tryCatch(
-    stripe.checkout.sessions.retrieve(event.data.object.id, {
+    stripeClient.checkout.sessions.retrieve(event.data.object.id, {
       expand: ["line_items"],
     }),
   );
@@ -52,7 +52,7 @@ const customerSubscriptionCreated = async (event: any) => {
 
     // Verify that the subscription exists in Stripe
     const { data: retrievedSubscription, error } = await tryCatch(
-      stripe.subscriptions.retrieve(subscription.id),
+      stripeClient.subscriptions.retrieve(subscription.id),
     );
 
     if (error) {

@@ -1,4 +1,4 @@
-import { stripe } from "@/lib/stripe";
+import {} from "@/lib/stripe";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";

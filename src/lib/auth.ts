@@ -19,6 +19,7 @@ import { stripeClient } from "./stripe";
 import { tryCatch } from "./try-catch";
 import { resend } from "./resend";
 import { projectHmrEvents } from "next/dist/build/swc/generated-native";
+import { handleStripeEvents } from "@/modules/stripe/utils/process-event";
 
 export const auth = betterAuth({
   appName: "Next start",
@@ -84,6 +85,9 @@ export const auth = betterAuth({
             priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
           },
         ],
+      },
+      onEvent: async (event) => {
+        await handleStripeEvents(event);
       },
     }),
   ],
