@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import * as init from "@/trpc/init";
-import { stripe } from "@/lib/stripe";
+import { stripeClient } from "@/lib/stripe";
 import { db } from "@/db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -23,7 +23,7 @@ export const stripeRouter = init.createTRPCRouter({
 
       if (!stripeCustomerId) {
         try {
-          const customer = await stripe.customers.create({
+          const customer = await stripeClient.customers.create({
             email,
             metadata: {
               userId: id,
@@ -44,7 +44,7 @@ export const stripeRouter = init.createTRPCRouter({
         }
       }
 
-      const { url } = await stripe.checkout.sessions.create({
+      const { url } = await stripeClient.checkout.sessions.create({
         customer: stripeCustomerId,
         payment_method_types: ["card"],
         line_items: [
