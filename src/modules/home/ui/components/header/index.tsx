@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 import UserButton from "@/modules/auth/ui/components/user-button";
@@ -9,22 +8,44 @@ import { getSession } from "@/lib/session";
 export const Header = async () => {
   const session = await getSession();
 
-  if (!session) {
-    redirect("/login");
-  }
-
   return (
     <header className="border-b px-12 py-4" data-testid="side-header">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Next-starter</h1>
-        <div className="flex items-center gap-x-4">
-          {!session && <ThemeToggle />}
+        <div>
+          <Link href="/" className="text-xl font-semibold">
+            Next-starter
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-x-6">
+          <nav className="hidden items-center space-x-4 md:flex">
+            <Link
+              href="/pricing"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/about"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              About
+            </Link>
+          </nav>
+
+          <ThemeToggle />
+
           {session ? (
             <UserButton user={session.user} />
           ) : (
-            <Link href="/login">
-              <Button>Sign In</Button>
-            </Link>
+            <div className="flex items-center space-x-2">
+              <Link href="/login">
+                <Button variant="ghost">Sign In</Button>
+              </Link>
+              <Link href="/register">
+                <Button>Sign Up</Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>
