@@ -1,10 +1,12 @@
 "use client";
 
-import { PlanCard } from "./plan-card";
 import { useState } from "react";
+
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+
 import { plans } from "../../constants";
+import { PlanCard } from "./plan-card";
 
 export function PricingPlans() {
   const [isAnnual, setIsAnnual] = useState(true);
