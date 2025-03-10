@@ -34,3 +34,25 @@ export const TwoFactorFormSchema = z.object({
 });
 
 export type TwoFactorFormValues = z.infer<typeof TwoFactorFormSchema>;
+
+export const updatePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(6, "Current password is required"),
+    newPassword: z
+      .string()
+      .min(8, "New password must be at least 8 characters")
+      .regex(/[A-Z]/, "New password must include at least one uppercase letter")
+      .regex(/[a-z]/, "New password must include at least one lowercase letter")
+      .regex(/[0-9]/, "New password must include at least one number")
+      .regex(
+        /[^A-Za-z0-9]/,
+        "New password must include at least one special character",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;

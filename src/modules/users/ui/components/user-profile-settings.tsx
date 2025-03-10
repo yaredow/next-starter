@@ -18,6 +18,9 @@ import { toast } from "sonner";
 import { ErrorBoundary } from "react-error-boundary";
 import { trpc } from "@/trpc/client";
 import { Loader2 } from "lucide-react";
+import { tryCatch } from "@/lib/try-catch";
+import { authClient } from "@/lib/auth-client";
+import { UpdatePasswordForm } from "@/modules/auth/ui/components/update-password-form";
 
 interface UserProfileSettingsProps {
   userId: string;
@@ -48,7 +51,19 @@ const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
   const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
 
   // Handle profile update
-  const handleUpdateProfile = () => {};
+  const handleUpdateProfile = async () => {
+    const { error } = await tryCatch(
+      authClient.updateUser({
+        name,
+      }),
+    );
+
+    if (error) {
+      toast("Failed to update profile", {
+        description: error.message,
+      });
+    }
+  };
 
   // Handle password update
   const handleUpdatePassword = () => {
@@ -116,36 +131,9 @@ const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="current-password">Current Password</Label>
-              <Input
-                id="current-password"
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-password">New Password</Label>
-              <Input
-                id="new-password"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm New Password</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <UpdatePasswordForm />
             </div>
           </CardContent>
-          <CardFooter>
-            <Button onClick={handleUpdatePassword}>Update Password</Button>
-          </CardFooter>
         </Card>
 
         {/* Security */}
