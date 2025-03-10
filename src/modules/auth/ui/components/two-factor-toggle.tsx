@@ -1,16 +1,16 @@
 "use client";
 
+import { ErrorBoundary } from "react-error-boundary";
 import { Suspense, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { ErrorBoundary } from "react-error-boundary";
-import { Loader2 } from "lucide-react";
-import { trpc } from "@/trpc/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { trpc } from "@/trpc/client";
 
 interface TwoFactorToggleProps {
   userId: string;
@@ -88,7 +88,7 @@ const TwoFactorToggleSuspense = ({ userId }: TwoFactorToggleProps) => {
   };
 
   return (
-    <div>
+    <>
       {showPasswordInput ? (
         <div className="flex flex-col space-y-2">
           <Label htmlFor="password">Password:</Label>
@@ -111,6 +111,6 @@ const TwoFactorToggleSuspense = ({ userId }: TwoFactorToggleProps) => {
           aria-label="Toggle 2FA"
         />
       )}
-    </div>
+    </>
   );
 };

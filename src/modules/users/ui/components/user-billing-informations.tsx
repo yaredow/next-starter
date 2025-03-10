@@ -1,13 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 
 import { Icons } from "@/components/shared/icons";
 import { capitalizeFullName } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 import { trpc } from "@/trpc/client";
-import { Loader } from "lucide-react";
 
 interface UserBillingInformationsProps {
   userId: string;
@@ -16,26 +19,11 @@ interface UserBillingInformationsProps {
 export const UserBillingInformations = ({
   userId,
 }: UserBillingInformationsProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-  const subscribe = trpc.stripe.subscribe.useMutation();
   const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
 
-  const isSubscribed = !!user.stripeSubscriptionId;
-
-  const onSubscribe = () => {
-    subscribe.mutate(
-      {
-        priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!,
-      },
-      {
-        onSuccess: (url) => {
-          if (url) {
-            router.push(url);
-          }
-        },
-      },
-    );
-  };
+  const isSubscribed = !!user.stripeCustomerId;
 
   const manageSubscription = () => {
     const url = process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL!;
@@ -44,6 +32,22 @@ export const UserBillingInformations = ({
       router.push(url + "?prefilled_email" + user.email);
     } else {
       throw new Error("Failed to edit payment details");
+    }
+  };
+
+  const onSubScribe = async () => {
+    setIsLoading(true);
+    const { data, error } = await authClient.subscription.upgrade({
+      plan: "basic",
+      successUrl: "/payments/success",
+      cancelUrl: "/payments/cancel",
+    });
+
+    if (error) {
+      setIsLoading(false);
+      toast("Subscription error", {
+        description: error.message,
+      });
     }
   };
 
@@ -83,8 +87,8 @@ export const UserBillingInformations = ({
             </Button>
           </div>
         ) : (
-          <Button onClick={onSubscribe} disabled={subscribe.isPending}>
-            {subscribe.isPending ? (
+          <Button onClick={onSubScribe} disabled={isLoading}>
+            {isLoading ? (
               <>
                 <Loader className="mr-2 animate-spin" />
                 Subscribe

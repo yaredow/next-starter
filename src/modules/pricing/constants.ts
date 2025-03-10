@@ -1,0 +1,42 @@
+export const plans = [
+  {
+    name: "Free",
+    description: "For individuals and small projects",
+    monthlyPrice: 0,
+    annualPrice: 0,
+    features: ["Up to 3 projects", "Basic analytics", "Community access"],
+    popular: false,
+    ctaText: "Get Started",
+    planId: "free",
+  },
+  {
+    name: "Pro",
+    description: "For professionals and growing businesses",
+    monthlyPrice: 19,
+    annualPrice: 190,
+    features: [
+      "Unlimited projects",
+      "Advanced analytics",
+      "Team collaboration",
+      "API access",
+    ],
+    popular: true,
+    ctaText: "Upgrade to Pro",
+    planId: "pro",
+  },
+  {
+    name: "Enterprise",
+    description: "For large organizations with advanced needs",
+    monthlyPrice: 49,
+    annualPrice: 490,
+    features: [
+      "Everything in Pro",
+      "Dedicated support",
+      "SSO authentication",
+      "Custom integrations",
+    ],
+    popular: false,
+    ctaText: "Contact Sales",
+    planId: "enterprise",
+  },
+];

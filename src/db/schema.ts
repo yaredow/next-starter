@@ -5,7 +5,6 @@ import {
   integer,
   timestamp,
   boolean,
-  varchar,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -17,18 +16,7 @@ export const user = pgTable("user", {
   twoFactorEnabled: boolean("two_factor_enabled"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-
-  // Stripe related fields
   stripeCustomerId: text("stripe_customer_id"),
-  stripeSubscriptionId: text("stripe_subscription_id"),
-  stripePriceId: text("stripe_price_id"),
-  stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
-  stripeSubscriptionStatus: varchar("stripe_subscription_status", {
-    length: 255,
-  }),
-  paymentMethodBrand: varchar("payment_method_brand", { length: 255 }),
-  paymentMethodLast4: varchar("payment_method_last4", { length: 4 }),
-  cancelAtPeriodEnd: boolean("cancel_at_period_end"),
 });
 
 export const userCreateSchema = createSelectSchema(user);
@@ -81,4 +69,17 @@ export const twoFactor = pgTable("two_factor", {
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+});
+
+export const subscription = pgTable("subscription", {
+  id: text("id").primaryKey(),
+  plan: text("plan").notNull(),
+  referenceId: text("reference_id").notNull(),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  status: text("status"),
+  periodStart: timestamp("period_start"),
+  periodEnd: timestamp("period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end"),
+  seats: integer("seats"),
 });

@@ -1,11 +1,18 @@
 import { headers } from "next/headers";
 import { auth } from "./auth";
-import { session } from "../../auth-schema";
+import { tryCatch } from "./try-catch";
 
 export const getSession = async () => {
-  const sessionData = await auth.api.getSession({ headers: await headers() });
+  const { data: sessionData, error } = await tryCatch(
+    auth.api.getSession({ headers: await headers() }),
+  );
 
-  if (!sessionData?.session) {
+  if (error) {
+    console.error("Error getting session", error);
+    return null;
+  }
+
+  if (!sessionData) {
     return null;
   }
 
