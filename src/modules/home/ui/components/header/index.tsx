@@ -33,8 +33,6 @@ export const Header = async () => {
             </Link>
           </nav>
 
-          <ThemeToggle />
-
           {session ? (
             <UserButton user={session.user} />
           ) : (

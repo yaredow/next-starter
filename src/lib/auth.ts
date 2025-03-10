@@ -2,7 +2,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { betterAuth } from "better-auth";
 
-import { handleStripeEvents } from "@/modules/subscription/utils/process-event";
 import TwoFactorEmail from "@/emails/2fa-verification-email";
 import { stripe } from "@better-auth/stripe";
 import { db } from "@/db";
@@ -16,6 +15,7 @@ import {
 } from "@/db/schema";
 
 import { hashPassword, verifyPassword } from "./utils";
+import { handleStripeEvents } from "./process-event";
 import { stripeClient } from "./stripe";
 import { tryCatch } from "./try-catch";
 import { resend } from "./resend";
