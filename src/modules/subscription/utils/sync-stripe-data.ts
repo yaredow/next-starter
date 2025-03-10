@@ -1,4 +1,4 @@
-import {} from "@/lib/stripe";
+import { stripeClient } from "@/lib/stripe";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
@@ -7,7 +7,7 @@ import { tryCatch } from "@/lib/try-catch";
 
 export async function syncStripeDataToDatabase(customerId: string) {
   const { data, error } = await tryCatch(
-    stripe.subscriptions.list({
+    stripeClient.subscriptions.list({
       customer: customerId,
       limit: 1,
       status: "all",

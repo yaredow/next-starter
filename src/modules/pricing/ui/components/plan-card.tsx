@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -9,6 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
+import { tryCatch } from "@/lib/try-catch";
 
 interface PlanCardProps {
   name: string;
@@ -19,6 +25,7 @@ interface PlanCardProps {
   popular?: boolean;
   ctaText: string;
   ctaLink?: string;
+  planId: string;
 }
 
 export function PlanCard({
@@ -30,7 +37,34 @@ export function PlanCard({
   popular = false,
   ctaText,
   ctaLink = "/register",
+  planId,
 }: PlanCardProps) {
+  const router = useRouter();
+  const [isLoading, setIsloading] = useState<boolean>(false);
+  const { data: session } = authClient.useSession();
+
+  const handleSubscribe = async (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    const { error } = await tryCatch(
+      authClient.subscription.upgrade({
+        plan: planId,
+        successUrl: "/dashboard",
+        cancelUrl: "/pricing",
+      }),
+    );
+
+    if (error) {
+      console.error(error);
+      setIsloading(false);
+    }
+  };
+
   return (
     <Card className={popular ? "relative border-primary shadow-md" : ""}>
       {popular && (
@@ -57,13 +91,20 @@ export function PlanCard({
         </ul>
       </CardContent>
       <CardFooter>
-        <Button
-          asChild
-          className={popular ? "" : "bg-muted-foreground"}
-          size="lg"
-        >
-          <Link href={ctaLink}>{ctaText}</Link>
-        </Button>
+        {session ? (
+          <Button
+            onClick={handleSubscribe}
+            disabled={isLoading}
+            className={popular ? "" : "bg-muted-foreground"}
+            size="lg"
+          >
+            {isLoading ? "Processing..." : ctaText}
+          </Button>
+        ) : (
+          <Button asChild className={popular ? "" : "bg-muted-foreground"}>
+            <Link href={ctaLink}>{ctaText}</Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

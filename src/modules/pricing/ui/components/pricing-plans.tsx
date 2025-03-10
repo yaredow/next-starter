@@ -29,7 +29,7 @@ export function PricingPlans() {
           htmlFor="billing-toggle"
           className={`cursor-pointer ${isAnnual ? "" : "text-muted-foreground"}`}
         >
-          Annual{" "}
+          Annual
           <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
             Save 20%
           </span>
@@ -47,6 +47,7 @@ export function PricingPlans() {
             popular={plan.popular}
             ctaText={plan.ctaText}
             interval={isAnnual ? "year" : "month"}
+            planId={plan.planId}
           />
         ))}
       </div>

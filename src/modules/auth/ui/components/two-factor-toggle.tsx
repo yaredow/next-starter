@@ -88,7 +88,7 @@ const TwoFactorToggleSuspense = ({ userId }: TwoFactorToggleProps) => {
   };
 
   return (
-    <div>
+    <>
       {showPasswordInput ? (
         <div className="flex flex-col space-y-2">
           <Label htmlFor="password">Password:</Label>
@@ -111,6 +111,6 @@ const TwoFactorToggleSuspense = ({ userId }: TwoFactorToggleProps) => {
           aria-label="Toggle 2FA"
         />
       )}
-    </div>
+    </>
   );
 };

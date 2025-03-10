@@ -1,5 +1,5 @@
 function SecurityPage() {
-  return <div>SecurityPage</div>;
+  return <div>Security Page</div>;
 }
 
 export default SecurityPage;

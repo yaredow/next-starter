@@ -80,11 +80,49 @@ export const auth = betterAuth({
         enabled: true,
         plans: [
           {
-            name: "Basic",
-            priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
+            name: "free",
+            priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!,
+            annualDiscountPriceId:
+              process.env.NEXT_PUBLIC_STRIPE_FREE_ANNUAL_PRICE_ID,
+            limits: {
+              projects: 3,
+              storage: 1,
+            },
+          },
+          {
+            name: "pro",
+            priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!,
+            annualDiscountPriceId:
+              process.env.NEXT_PUBLIC_STRIPE_PRO_ANNUAL_PRICE_ID,
+            limits: {
+              projects: 10,
+              storage: 10,
+            },
+            freeTrial: {
+              days: 14,
+            },
+          },
+          {
+            name: "enterprise",
+            priceId: process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_PRICE_ID!,
+            annualDiscountPriceId:
+              process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_ANNUAL_PRICE_ID,
+            limits: {
+              projects: 50,
+              storage: 100,
+            },
           },
         ],
       },
+      /**
+       * The plugin automatically handles common webhook events:
+       *   - checkout.session.completed: Updates subscription status after checkout
+       *   - customer.subscription.updated: Updates subscription details when changed
+       *   - customer.subscription.deleted: Marks subscription as canceled
+       *
+       * Use this hook to handle additional custom logic for these events
+       * or to process other webhook events from Stripe.
+       */
       onEvent: async (event) => {
         await handleStripeEvents(event);
       },

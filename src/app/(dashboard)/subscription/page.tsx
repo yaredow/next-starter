@@ -1,5 +1,5 @@
 function SubscriptionPage() {
-  return <div>SubscriptionPage</div>;
+  return <div>Subscription Page</div>;
 }
 
 export default SubscriptionPage;
