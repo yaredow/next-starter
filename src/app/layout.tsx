@@ -41,7 +41,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCProvider key={0}>
-            <NextTopLoader />
             <div>
               {children}
               <Toaster />
