@@ -1,7 +1,7 @@
-import { getSession } from "@/lib/session";
-import { UserProfileSettings } from "@/modules/users/ui/components/user-profile-settings";
-import { trpc } from "@/trpc/server";
 import { redirect } from "next/navigation";
+
+import { UserProfileSettingsView } from "@/modules/users/ui/views/user-profile-settings-view";
+import { getSession } from "@/lib/session";
 
 const SettingsPage = async () => {
   const session = await getSession();
@@ -10,9 +10,7 @@ const SettingsPage = async () => {
     redirect("/login");
   }
 
-  void trpc.users.getUser.prefetch({ id: session.user.id });
-
-  return <UserProfileSettings userId={session.user.id} />;
+  return <UserProfileSettingsView userId={session.user.id} />;
 };
 
 export default SettingsPage;
