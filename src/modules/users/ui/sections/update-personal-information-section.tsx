@@ -9,7 +9,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
 import { trpc } from "@/trpc/client";
 
-import { CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,11 +40,17 @@ export const UpdatePersonalInformationSection = ({
   userId,
 }: UpdatePersonalInformationProps) => {
   return (
-    <Suspense fallback={<UpdatePersonalInformationSkeleton />}>
-      <ErrorBoundary fallback={<UpdatePersonalInformationError />}>
-        <UpdatePersonalInformationSectionSuspense userId={userId} />
-      </ErrorBoundary>
-    </Suspense>
+    <Card>
+      <CardHeader>
+        <CardTitle>Personal Information</CardTitle>
+        <CardDescription>Update your personal details.</CardDescription>
+      </CardHeader>
+      <Suspense fallback={<UpdatePersonalInformationSkeleton />}>
+        <ErrorBoundary fallback={<UpdatePersonalInformationError />}>
+          <UpdatePersonalInformationSectionSuspense userId={userId} />
+        </ErrorBoundary>
+      </Suspense>
+    </Card>
   );
 };
 

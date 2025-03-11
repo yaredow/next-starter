@@ -33,81 +33,14 @@ export const UserProfileSettingsSection = ({
   return (
     <div className="container mx-auto py-10">
       <div className="space-y-6">
-        {/* Personal Information Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-            <CardDescription>Update your personal details.</CardDescription>
-          </CardHeader>
-          <ErrorBoundary fallback={<p>Error</p>}>
-            <Suspense fallback={<PersonalInfoSkeleton />}>
-              <UpdatePersonalInformationSection userId={userId} />
-            </Suspense>
-          </ErrorBoundary>
-        </Card>
+        <UpdatePersonalInformationSection userId={userId} />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Update Password</CardTitle>
-            <CardDescription>Update your account password.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <UpdatePasswordForm />
-          </CardContent>
-        </Card>
+        <UpdatePasswordForm />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Security</CardTitle>
-            <CardDescription>
-              Manage your account security settings.
-            </CardDescription>
-          </CardHeader>
-          <ErrorBoundary fallback={<p>Error</p>}>
-            <Suspense fallback={<SecuritySkeleton />}>
-              <SecuritySettings userId={userId} />
-            </Suspense>
-          </ErrorBoundary>
-        </Card>
+        <SecuritySettings userId={userId} />
 
-        {/* Danger Zone Card */}
         <DangerZoneCard />
       </div>
     </div>
   );
 };
-
-// Security content with data dependencies
-
-// Skeletons for loading states
-const PersonalInfoSkeleton = () => (
-  <>
-    <CardContent className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Skeleton className="h-10 w-full" />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Skeleton className="h-10 w-full" />
-      </div>
-    </CardContent>
-    <CardFooter>
-      <Skeleton className="h-10 w-28" />
-    </CardFooter>
-  </>
-);
-
-const SecuritySkeleton = () => (
-  <CardContent className="space-y-4">
-    <div className="flex items-center justify-between">
-      <div className="space-y-0.5">
-        <Label htmlFor="two-factor">Two-factor authentication</Label>
-        <p className="text-sm text-muted-foreground">
-          Add an extra layer of security to your account
-        </p>
-      </div>
-      <Skeleton className="h-6 w-12 rounded-full" />
-    </div>
-  </CardContent>
-);

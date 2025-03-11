@@ -17,7 +17,6 @@ import { trpc } from "@/trpc/client";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { toast } from "sonner";
-import { AlertTriangle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { tryCatch } from "@/lib/try-catch";
 
 interface SecuritySettingsProps {
   userId: string;
@@ -71,13 +71,11 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
       return;
     }
 
-    try {
-      // First verify the password
-      await verifyPassword.mutateAsync(
+    const { error } = await tryCatch(
+      verifyPassword.mutateAsync(
         { password },
         {
           onSuccess: () => {
-            // Password verified, now enable/disable 2FA
             applyTwoFactorChange();
           },
           onError: (error) => {
@@ -86,62 +84,60 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
             });
           },
         },
-      );
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description: "Please try again later",
+      ),
+    );
+
+    if (error) {
+      console.error(error);
+
+      toast("Error", {
+        description: "An error occurred while verifying your password",
       });
     }
   };
 
   // Apply the 2FA change after password verification
   const applyTwoFactorChange = async () => {
-    try {
-      if (targetState) {
-        // Enable 2FA
-        await authClient.twoFactor.enable(
-          { password },
-          {
-            onSuccess: () => {
-              toast.success("2FA Enabled", {
-                description:
-                  "Two-factor authentication has been enabled on your account",
-              });
-              utils.users.getUser.invalidate({ id: userId });
-              resetState();
-            },
-            onError: (ctx) => {
-              toast.error("Failed to enable 2FA", {
-                description: ctx.error.message,
-              });
-            },
+    if (targetState) {
+      // Enable 2FA
+      await authClient.twoFactor.enable(
+        { password },
+        {
+          onSuccess: () => {
+            toast.success("2FA Enabled", {
+              description:
+                "Two-factor authentication has been enabled on your account",
+            });
+            utils.users.getUser.invalidate({ id: userId });
+            resetState();
           },
-        );
-      } else {
-        // Disable 2FA
-        await authClient.twoFactor.disable(
-          { password },
-          {
-            onSuccess: () => {
-              toast.success("2FA Disabled", {
-                description:
-                  "Two-factor authentication has been disabled on your account",
-              });
-              utils.users.getUser.invalidate({ id: userId });
-              resetState();
-            },
-            onError: (ctx) => {
-              toast.error("Failed to disable 2FA", {
-                description: ctx.error.message,
-              });
-            },
+          onError: (ctx) => {
+            toast.error("Failed to enable 2FA", {
+              description: ctx.error.message,
+            });
           },
-        );
-      }
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description: "Please try again later",
-      });
+        },
+      );
+    } else {
+      // Disable 2FA
+      await authClient.twoFactor.disable(
+        { password },
+        {
+          onSuccess: () => {
+            toast.success("2FA Disabled", {
+              description:
+                "Two-factor authentication has been disabled on your account",
+            });
+            utils.users.getUser.invalidate({ id: userId });
+            resetState();
+          },
+          onError: (ctx) => {
+            toast.error("Failed to disable 2FA", {
+              description: ctx.error.message,
+            });
+          },
+        },
+      );
     }
   };
 
