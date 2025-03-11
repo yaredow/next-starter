@@ -46,8 +46,6 @@ const UpdatePersonalInformationSectionSuspense = ({
 }: {
   userId: string;
 }) => {
-  const [isLoading, setIslLoading] = useState(false);
-
   const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
   const utils = trpc.useUtils();
   const form = useForm<UpdateUserInput>({
@@ -55,7 +53,7 @@ const UpdatePersonalInformationSectionSuspense = ({
     defaultValues: user,
   });
 
-  const { isDirty } = form.formState;
+  const { isDirty, isLoading } = form.formState;
 
   const onSubmit = async (values: UpdateUserInput) => {
     if (!isDirty) {
@@ -65,21 +63,18 @@ const UpdatePersonalInformationSectionSuspense = ({
       return;
     }
 
-    setIslLoading(true);
     await authClient.updateUser(
       {
         ...values,
       },
       {
         onSuccess: () => {
-          setIslLoading(false);
           utils.users.getUser.invalidate({ id: userId });
           toast("Profile updated", {
             description: "Profile updated successfully",
           });
         },
         onError: (ctx) => {
-          setIslLoading(false);
           toast("Error", {
             description: ctx.error.message,
           });

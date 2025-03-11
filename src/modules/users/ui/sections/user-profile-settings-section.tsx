@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DangerZoneCard } from "../components/danger-zone-card";
 import { UpdatePersonalInformationSection } from "./update-personal-information-section";
+import { SecuritySettings } from "../components/security-settings";
 
 interface UserProfileSettingsSectionProps {
   userId: string;
@@ -45,7 +46,15 @@ export const UserProfileSettingsSection = ({
           </ErrorBoundary>
         </Card>
 
-        <UpdatePasswordForm />
+        <Card>
+          <CardHeader>
+            <CardTitle>Update Password</CardTitle>
+            <CardDescription>Update your account password.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <UpdatePasswordForm />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
@@ -56,7 +65,7 @@ export const UserProfileSettingsSection = ({
           </CardHeader>
           <ErrorBoundary fallback={<p>Error</p>}>
             <Suspense fallback={<SecuritySkeleton />}>
-              <SecurityContent userId={userId} />
+              <SecuritySettings userId={userId} />
             </Suspense>
           </ErrorBoundary>
         </Card>
@@ -68,33 +77,7 @@ export const UserProfileSettingsSection = ({
   );
 };
 
-// Personal Information content with data dependencies
-
 // Security content with data dependencies
-const SecurityContent = ({ userId }: { userId: string }) => {
-  const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(
-    user?.twoFactorEnabled || false,
-  );
-
-  return (
-    <CardContent className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="space-y-0.5">
-          <Label htmlFor="two-factor">Two-factor authentication</Label>
-          <p className="text-sm text-muted-foreground">
-            Add an extra layer of security to your account
-          </p>
-        </div>
-        <Switch
-          id="two-factor"
-          checked={user.twoFactorEnabled || false}
-          onCheckedChange={setTwoFactorEnabled}
-        />
-      </div>
-    </CardContent>
-  );
-};
 
 // Skeletons for loading states
 const PersonalInfoSkeleton = () => (
