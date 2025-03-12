@@ -1,4 +1,4 @@
-import UserLayout from "@/modules/users/layouts/user-layout";
+import UserLayout from "@/modules/users/ui/layouts/user-layout";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
