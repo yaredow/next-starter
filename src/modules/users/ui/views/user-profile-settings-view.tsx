@@ -11,8 +11,8 @@ export const UserProfileSettingsView = ({
   void trpc.users.getUser.prefetch({ id: userId });
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="mb-6 text-3xl font-bold">Account settings</h1>
+    <div className="container py-10">
+      <h1 className="mb-3 text-3xl font-bold">Account settings</h1>
       <div className="space-y-8">
         <HydrateClient>
           <UserProfileSettingsSection userId={userId} />

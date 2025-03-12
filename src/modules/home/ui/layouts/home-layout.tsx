@@ -6,13 +6,7 @@ interface HomeLayoutProps {
 }
 
 const HomeLayout = ({ children }: HomeLayoutProps) => {
-  return (
-    <div className="h-screen w-full">
-      <Header />
-      {children}
-      <FooterComponent />
-    </div>
-  );
+  return <div className="h-screen w-full">{children}</div>;
 };
 
 export default HomeLayout;
