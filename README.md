@@ -121,10 +121,6 @@ To start the React Email development server, use the following command:
 npm run email:dev
 ```
 
-## Pre-commit Hook
-
-This project uses [Husky](https://github.com/typicode/husky) to manage Git hooks. When you commit a change, Husky runs the following commands automatically:
-
 ```
 npm run format:fix && npm run lint && npm test
 ```
