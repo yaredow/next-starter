@@ -50,8 +50,8 @@ This template is built using the following technologies:
 
 Clone the repository and start building your application with confidence!
 
-git clone https://github.com/your-username/nextjs-starter-template.git
-cd nextjs-starter-template
+git clone https://github.com/yaredow/next-starter.git
+cd next-starter
 npm install
 
 ```
