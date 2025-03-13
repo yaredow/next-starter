@@ -58,7 +58,7 @@ export default function UserButton({ user }: UserButtonProps) {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         asChild
-        className="relative cursor-pointer outline-none"
+        className="relative cursor-pointer outline-hidden"
       >
         <Avatar className="relative size-10 rounded-full border border-neutral-300 transition hover:opacity-75">
           {image ? (
