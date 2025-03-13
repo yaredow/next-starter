@@ -1,5 +1,6 @@
 import { type ReactElement } from "react";
 import { useMedia } from "react-use";
+
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Dialog,

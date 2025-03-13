@@ -9,7 +9,6 @@ import { getSession } from "@/lib/session";
 
 const TwoFactorPage = async () => {
   const sessionData = await getSession();
-  console.log({ sessionData });
 
   if (!sessionData) {
     redirect("/");

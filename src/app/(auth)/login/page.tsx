@@ -1,11 +1,11 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 import { UserAuthForm } from "@/modules/auth/ui/components/user-auth-form";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
-import { cn } from "@/lib/utils";
 import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Login",

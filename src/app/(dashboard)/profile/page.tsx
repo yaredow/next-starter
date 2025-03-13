@@ -11,6 +11,8 @@ const ProfilePage = async () => {
     redirect("/login");
   }
 
+  void trpc.users.getUser.prefetch({ id: session.user.id });
+
   return <UserProfileView userId={session.user.id} />;
 };
 
