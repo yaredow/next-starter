@@ -1,9 +1,9 @@
-import DashboardLayout from "@/modules/dashboard/ui/layouts/dashboard-layout";
+import UserLayout from "@/modules/users/ui/layouts/user-layout";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export default function Layout({ children }: DashboardLayoutProps) {
-  return <DashboardLayout>{children}</DashboardLayout>;
+  return <UserLayout>{children}</UserLayout>;
 }

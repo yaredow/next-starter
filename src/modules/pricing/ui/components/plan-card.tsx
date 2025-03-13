@@ -1,5 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { tryCatch } from "@/lib/try-catch";
 import {
   Card,
   CardContent,
@@ -8,13 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
-import { tryCatch } from "@/lib/try-catch";
 
 interface PlanCardProps {
   name: string;

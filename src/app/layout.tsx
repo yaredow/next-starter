@@ -12,6 +12,8 @@ import { fonts } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
+import { Header } from "@/modules/home/ui/components/header";
+import { FooterComponent } from "@/modules/home/ui/components/footer";
 
 export const metadata = SiteConfig;
 
@@ -41,11 +43,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCProvider key={0}>
-            <NextTopLoader />
-            <div>
-              {children}
-              <Toaster />
-            </div>
+            <Header />
+            {children}
+            <FooterComponent />
+            <Toaster />
           </TRPCProvider>
         </ThemeProvider>
       </body>

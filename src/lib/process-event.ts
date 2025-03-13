@@ -1,6 +1,6 @@
 import { Stripe } from "stripe";
 
-import { allowedEvents } from "../constants";
+import { allowedEvents } from "@/modules/subscription/constants";
 
 const handleInvoicePaid = (event: Stripe.Event) => {
   console.log("Invoice paid event received", event);

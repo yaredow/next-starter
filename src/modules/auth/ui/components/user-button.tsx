@@ -85,7 +85,7 @@ export default function UserButton({ user }: UserButtonProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile/setting" className="flex items-center">
+          <Link href="/profile/settings" className="flex items-center">
             <Settings className="mr-2 size-4" />
             Settings
           </Link>

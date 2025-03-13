@@ -33,17 +33,13 @@ export const Header = async () => {
             </Link>
           </nav>
 
-          <ThemeToggle />
-
           {session ? (
             <UserButton user={session.user} />
           ) : (
             <div className="flex items-center space-x-2">
+              <ThemeToggle />
               <Link href="/login">
-                <Button variant="ghost">Sign In</Button>
-              </Link>
-              <Link href="/register">
-                <Button>Sign Up</Button>
+                <Button>Sign In</Button>
               </Link>
             </div>
           )}

@@ -16,83 +16,116 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
-import { PasswordFormValues, PasswordSchema } from "../../schema";
 import { toast } from "sonner";
+import { useConfirm } from "@/hooks/use-confirm";
+import { UpdatePasswordInput, updatePasswordSchema } from "../../schema";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function UpdatePasswordForm() {
   const router = useRouter();
-  const form = useForm<PasswordFormValues>({
-    resolver: zodResolver(PasswordSchema),
+  const form = useForm<UpdatePasswordInput>({
+    resolver: zodResolver(updatePasswordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
   });
 
-  async function onSubmit(data: PasswordFormValues) {
-    await authClient.changePassword(
-      {
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-        revokeOtherSessions: true,
-      },
-      {
-        onSuccess() {
-          toast("Password updated", {
-            description: "Password updated successfully",
-          });
-          router.push("/profile");
+  const [ConfirmationDialog, confirm] = useConfirm({
+    title: "Change Password",
+    message:
+      "Are you sure you want to change your password? You will be logged out",
+    variant: "destructive",
+  });
+
+  async function onSubmit(data: UpdatePasswordInput) {
+    const ok = await confirm();
+
+    if (ok) {
+      await authClient.changePassword(
+        {
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+          revokeOtherSessions: true,
         },
-        onError(error) {
-          console.error(error);
-          toast("Error", {
-            description: "Something went wrong",
-          });
+        {
+          onSuccess() {
+            toast("Password updated", {
+              description: "Password updated successfully",
+            });
+            router.push("/profile");
+          },
+          onError(ctx) {
+            toast("Error", {
+              description: ctx.error.message,
+            });
+          },
         },
-      },
-    );
+      );
+    }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="currentPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Current Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="newPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm New Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Update Password</Button>
-      </form>
-    </Form>
+    <Card>
+      <ConfirmationDialog />
+      <CardHeader>
+        <CardTitle>Update Password</CardTitle>
+        <CardDescription>Update your account password.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="currentPassword"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>Current Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="newPassword"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>New Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>Confirm New Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Update Password</Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
