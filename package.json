@@ -15,7 +15,11 @@
     "coverage": "jest --coverage",
     "cy:open": "cypress open",
     "lint": "next lint",
-    "email:dev": "email dev --dir src/emails"
+    "email:dev": "email dev --dir src/emails",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
     "@better-auth/stripe": "^1.2.3",
