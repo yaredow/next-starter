@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { HydrateClient, trpc } from "@/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { UserProfileSection } from "../sections/user-profile-section";
 
 interface UserProfileViewProps {
@@ -13,7 +13,7 @@ interface UserProfileViewProps {
 }
 
 export const UserProfileView = ({ userId }: UserProfileViewProps) => {
-  void trpc.users.getUser.prefetch({ id: userId });
+  prefetch(trpc.users.getUser.queryOptions({ id: userId }));
 
   return (
     <div className="container py-10">

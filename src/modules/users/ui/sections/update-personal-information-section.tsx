@@ -7,7 +7,6 @@ import { toast } from "sonner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
-import { trpc } from "@/trpc/client";
 
 import {
   Card,
@@ -31,6 +30,8 @@ import {
 } from "@/components/ui/form";
 
 import { UpdateUserInput, updateUserSchema } from "../../schemas";
+import { useTRPC } from "@/trpc/client";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 interface UpdatePersonalInformationProps {
   userId: string;
@@ -59,8 +60,11 @@ const UpdatePersonalInformationSectionSuspense = ({
 }: {
   userId: string;
 }) => {
-  const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
-  const utils = trpc.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { data: user } = useSuspenseQuery(
+    trpc.users.getUser.queryOptions({ id: userId }),
+  );
   const form = useForm<UpdateUserInput>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: user,
@@ -82,7 +86,9 @@ const UpdatePersonalInformationSectionSuspense = ({
       },
       {
         onSuccess: () => {
-          utils.users.getUser.invalidate({ id: userId });
+          queryClient.invalidateQueries({
+            queryKey: trpc.users.getUser.queryOptions({ id: userId }).queryKey,
+          });
           toast("Profile updated", {
             description: "Profile updated successfully",
           });
@@ -164,13 +170,13 @@ const UpdatePersonalInformationSkeleton = () => {
 const UpdatePersonalInformationError = () => {
   return (
     <CardContent>
-      <div className="rounded-md bg-destructive/10 p-4">
+      <div className="bg-destructive/10 rounded-md p-4">
         <div className="flex items-center">
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-destructive">
+            <h3 className="text-destructive text-sm font-medium">
               Failed to load your information
             </h3>
-            <div className="mt-2 text-sm text-destructive/80">
+            <div className="text-destructive/80 mt-2 text-sm">
               <p>Something went wrong. Please try refreshing the page.</p>
             </div>
           </div>

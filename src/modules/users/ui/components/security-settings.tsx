@@ -1,5 +1,17 @@
 "use client";
 
+import { ErrorBoundary } from "react-error-boundary";
+import { Suspense, useState } from "react";
+import { toast } from "sonner";
+
+import { Skeleton } from "@/components/ui/skeleton";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
+import { tryCatch } from "@/lib/try-catch";
+import { useTRPC } from "@/trpc/client";
 import {
   Card,
   CardContent,
@@ -7,16 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { trpc } from "@/trpc/client";
-import { Suspense, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +27,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { tryCatch } from "@/lib/try-catch";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 interface SecuritySettingsProps {
   userId: string;
@@ -54,9 +60,22 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
   const [showPasswordField, setShowPasswordField] = useState(false);
   const [targetState, setTargetState] = useState(false);
 
-  const utils = trpc.useUtils();
-  const verifyPassword = trpc.users.verifyUserPassword.useMutation();
-  const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const verifyPasswordMutation = useMutation(
+    trpc.users.verifyUserPassword.mutationOptions(),
+  );
+
+  const { data: user } = useSuspenseQuery(
+    trpc.users.getUser.queryOptions({ id: userId }),
+  );
+
+  // invalidate the user query when the password is verified
+  const invalidateUser = async () => {
+    await queryClient.invalidateQueries(
+      trpc.users.getUser.queryFilter({ id: userId }),
+    );
+  };
 
   // Handle when user clicks the toggle
   const handleToggleClick = (enabled: boolean) => {
@@ -72,7 +91,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
     }
 
     const { error } = await tryCatch(
-      verifyPassword.mutateAsync(
+      verifyPasswordMutation.mutateAsync(
         { password },
         {
           onSuccess: () => {
@@ -108,7 +127,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
               description:
                 "Two-factor authentication has been enabled on your account",
             });
-            utils.users.getUser.invalidate({ id: userId });
+            invalidateUser();
             resetState();
           },
           onError: (ctx) => {
@@ -128,7 +147,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
               description:
                 "Two-factor authentication has been disabled on your account",
             });
-            utils.users.getUser.invalidate({ id: userId });
+            invalidateUser();
             resetState();
           },
           onError: (ctx) => {
@@ -157,7 +176,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <Label htmlFor="two-factor">Two-factor authentication</Label>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Add an extra layer of security to your account
           </p>
         </div>
@@ -165,7 +184,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
           id="two-factor"
           checked={user.twoFactorEnabled || false}
           onCheckedChange={handleToggleClick}
-          disabled={showPasswordField || verifyPassword.isPending}
+          disabled={showPasswordField || verifyPasswordMutation.isPending}
         />
       </div>
 
@@ -197,15 +216,15 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
             <Button
               variant="outline"
               onClick={handleCancel}
-              disabled={verifyPassword.isPending}
+              disabled={verifyPasswordMutation.isPending}
             >
               Cancel
             </Button>
             <Button
               onClick={handleVerifyAndApply}
-              disabled={!password || verifyPassword.isPending}
+              disabled={!password || verifyPasswordMutation.isPending}
             >
-              {verifyPassword.isPending
+              {verifyPasswordMutation.isPending
                 ? "Verifying..."
                 : targetState
                   ? "Enable 2FA"
@@ -223,7 +242,7 @@ const SecuritySkeleton = () => (
     <div className="flex items-center justify-between">
       <div className="space-y-0.5">
         <Label htmlFor="two-factor">Two-factor authentication</Label>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Add an extra layer of security to your account
         </p>
       </div>

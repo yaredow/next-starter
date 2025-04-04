@@ -4,9 +4,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Suspense } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { trpc } from "@/trpc/client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
 
 interface UserProfileSectionProps {
   userId: string;
@@ -23,7 +24,10 @@ export const UserProfileSection = ({ userId }: UserProfileSectionProps) => {
 };
 
 const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
-  const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
+  const trpc = useTRPC();
+  const { data: user } = useSuspenseQuery(
+    trpc.users.getUser.queryOptions({ id: userId }),
+  );
 
   const initials = user.name
     ? user.name
@@ -44,14 +48,14 @@ const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
         </Avatar>
         <div className="space-y-1">
           <h3 className="text-2xl font-bold">{user.name}</h3>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
+          <p className="text-muted-foreground text-sm">{user.email}</p>
         </div>
       </div>
 
       <div className="grid gap-6 border-t pt-4 md:grid-cols-2">
         <div className="space-y-1">
           <p className="text-sm font-medium">Member since</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {new Date(user.createdAt).toLocaleDateString()}
           </p>
         </div>
@@ -62,7 +66,7 @@ const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
             <div
               className={`mr-2 h-2 w-2 rounded-full ${user.emailVerified ? "bg-green-500" : "bg-amber-500"}`}
             ></div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {user.emailVerified ? "Verified" : "Not verified"}
             </p>
           </div>
@@ -70,14 +74,14 @@ const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
 
         <div className="space-y-1">
           <p className="text-sm font-medium">Two-factor authentication</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {user.twoFactorEnabled ? "Enabled" : "Disabled"}
           </p>
         </div>
 
         <div className="space-y-1">
           <p className="text-sm font-medium">Last updated</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {new Date(user.updatedAt).toLocaleDateString()}
           </p>
         </div>

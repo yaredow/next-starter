@@ -19,10 +19,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
-import { trpc } from "@/trpc/client";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AlertTriangle } from "lucide-react";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
 
 export const DangerZoneCard = () => {
   // State for password verification
@@ -31,7 +32,10 @@ export const DangerZoneCard = () => {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
-  const verifyPassword = trpc.users.verifyUserPassword.useMutation();
+  const trpc = useTRPC();
+  const { mutate: verifyPassword, isPending } = useMutation(
+    trpc.users.verifyUserPassword.mutationOptions(),
+  );
 
   // Step 1: Show password dialog when delete button is clicked
   const handleDeleteButtonClick = () => {
@@ -46,7 +50,7 @@ export const DangerZoneCard = () => {
       return;
     }
 
-    verifyPassword.mutate(
+    verifyPassword(
       { password },
       {
         onSuccess: async () => {
@@ -111,7 +115,7 @@ export const DangerZoneCard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Once you delete your account, there is no going back. This action
               permanently removes your account and all associated data.
             </p>
@@ -140,8 +144,8 @@ export const DangerZoneCard = () => {
 
           <div className="grid gap-4 py-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              <p className="text-sm text-muted-foreground">
+              <AlertTriangle className="text-destructive h-5 w-5" />
+              <p className="text-muted-foreground text-sm">
                 This action is irreversible. All your data will be permanently
                 deleted.
               </p>
@@ -162,9 +166,9 @@ export const DangerZoneCard = () => {
             )}
 
             {isVerified && (
-              <div className="rounded-md bg-destructive/10 p-4">
+              <div className="bg-destructive/10 rounded-md p-4">
                 <div className="flex items-center justify-center">
-                  <p className="text-sm font-medium text-destructive">
+                  <p className="text-destructive text-sm font-medium">
                     Are you sure you want to delete your account?
                   </p>
                 </div>
@@ -176,7 +180,7 @@ export const DangerZoneCard = () => {
             <Button
               variant="outline"
               onClick={handleCancel}
-              disabled={verifyPassword.isPending || isLoading}
+              disabled={isPending || isLoading}
             >
               Cancel
             </Button>
@@ -185,9 +189,9 @@ export const DangerZoneCard = () => {
               <Button
                 variant="destructive"
                 onClick={handlePasswordVerify}
-                disabled={!password || verifyPassword.isPending}
+                disabled={!password || isPending}
               >
-                {verifyPassword.isPending ? "Verifying..." : "Verify"}
+                {isPending ? "Verifying..." : "Verify"}
               </Button>
             ) : (
               <Button

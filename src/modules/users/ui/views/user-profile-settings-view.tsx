@@ -1,4 +1,4 @@
-import { HydrateClient, trpc } from "@/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { UserProfileSettingsSection } from "../sections/user-profile-settings-section";
 
 interface UserProfileSettingsViewProps {
@@ -8,7 +8,7 @@ interface UserProfileSettingsViewProps {
 export const UserProfileSettingsView = ({
   userId,
 }: UserProfileSettingsViewProps) => {
-  void trpc.users.getUser.prefetch({ id: userId });
+  prefetch(trpc.users.getUser.queryOptions({ id: userId }));
 
   return (
     <div className="container py-10">
