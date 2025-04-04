@@ -1,13 +1,24 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/trpc/init";
 import { verifyPassword } from "@/lib/utils";
 import { account, user } from "@/db/schema";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 
 export const userRouter = createTRPCRouter({
+  greeting: baseProcedure
+    .input(z.object({ text: z.string() }))
+    .query(({ input }) => {
+      return {
+        greeting: `Hello ${input.text}`,
+      };
+    }),
   getUser: protectedProcedure
     .input(
       z.object({

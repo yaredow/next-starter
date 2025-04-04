@@ -2,32 +2,21 @@ import { Github } from "lucide-react";
 import type React from "react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { Client } from "./client";
+import { ErrorBoundary } from "react-error-boundary";
+import { Suspense } from "react";
 
 export default function Home() {
+  prefetch(trpc.users.greeting.queryOptions({ text: "World" }));
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-foreground">
-      <div className="container mx-auto max-w-3xl space-y-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">
-          Next.js Starter Template
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          A minimal template to kickstart your Next.js projects.
-        </p>
-        <div className="flex justify-center gap-4">
-          <Link href="https://next-start.yaredyilma.dev">
-            <Button size="lg" className="rounded-full">
-              Get Started
-            </Button>
-          </Link>
-          <Link href="https://github.com/yaredow/nextjs-starter-template">
-            <Button size="lg" variant="outline" className="rounded-full">
-              <Github className="mr-2 h-5 w-5" />
-              Github
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </main>
+    <HydrateClient>
+      <ErrorBoundary fallback={<div>Sorry something went wrong</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Client />
+        </Suspense>
+      </ErrorBoundary>
+    </HydrateClient>
   );
 }
