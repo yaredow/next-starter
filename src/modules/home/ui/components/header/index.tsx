@@ -4,6 +4,7 @@ import UserButton from "@/modules/auth/ui/components/user-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/session";
+import { LangSwitcher } from "@/components/lang-switcher";
 
 export const Header = async () => {
   const session = await getSession();
@@ -18,16 +19,17 @@ export const Header = async () => {
         </div>
 
         <div className="flex items-center gap-x-6">
+          <LangSwitcher />
           <nav className="hidden items-center space-x-4 md:flex">
             <Link
               href="/pricing"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="hover:text-primary text-sm font-medium transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="/about"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="hover:text-primary text-sm font-medium transition-colors"
             >
               About
             </Link>
