@@ -1,23 +1,23 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SiteConfig } from "@/configs/site.config";
+import { TRPCReactProvider } from "@/trpc/client";
 import {
   OrganizationJsonLd,
   WebsiteSchemaJsonLd,
 } from "@/components/seo/structured-data";
+import { routing } from "@/i18n/routing";
 import { fonts } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
 import { FooterComponent } from "@/modules/home/ui/components/footer";
 import { Header } from "@/modules/home/ui/components/header";
-import { TRPCReactProvider } from "@/trpc/client";
 
 import "../globals.css";
-import { routing } from "@/i18n/routing";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
 
 interface RootLayoutParams {
   children: React.ReactNode;
