@@ -1,3 +1,4 @@
+import { Header } from "@/modules/home/ui/components/header";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -21,5 +22,10 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>;
+  return (
+    <NextIntlClientProvider>
+      <Header />
+      {children}
+    </NextIntlClientProvider>
+  );
 }

@@ -6,5 +6,8 @@
     "subHeading": "A minimal template to kickstart your Next.js projects.",
     "getStartedButton": "Get Started",
     "githubButton": "Github"
-  }
+  },
+  "label": "Select Language",
+  "en": "English",
+  "de": "German"
 }

@@ -11,7 +11,7 @@ import {
 } from "./ui/select";
 
 export const LangSwitcher = () => {
-  const t = useTranslations("localeSwitcher");
+  const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();

@@ -6,5 +6,10 @@
     "subHeading": "Una plantilla mínima para impulsar tus proyectos de Next.js.",
     "getStartedButton": "Empezar",
     "githubButton": "Github"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "de": "German"
   }
 }
