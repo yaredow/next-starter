@@ -1,27 +1,30 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SiteConfig } from "@/configs/site.config";
+import { TRPCReactProvider } from "@/trpc/client";
 import {
   OrganizationJsonLd,
   WebsiteSchemaJsonLd,
 } from "@/components/seo/structured-data";
+import { routing } from "@/i18n/routing";
 import { fonts } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
 import { FooterComponent } from "@/modules/home/ui/components/footer";
-import { Header } from "@/modules/home/ui/components/header";
-import { TRPCProvider, TRPCReactProvider } from "@/trpc/client";
 
 import "./globals.css";
 
-export const metadata = SiteConfig;
-
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface RootLayoutParams {
   children: React.ReactNode;
-}>) {
+}
+
+export default async function RootLayout({
+  children,
+}: Readonly<RootLayoutParams>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -43,10 +46,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCReactProvider key={0}>
-            <Header />
-            {children}
-            <FooterComponent />
-            <Toaster />
+            <NextIntlClientProvider>
+              {children}
+              <FooterComponent />
+              <Toaster />
+            </NextIntlClientProvider>
           </TRPCReactProvider>
         </ThemeProvider>
       </body>
