@@ -1,5 +1,6 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { twoFactor } from "better-auth/plugins/two-factor";
+import { organization } from "better-auth/plugins";
 import { betterAuth } from "better-auth";
 
 import TwoFactorEmail from "@/emails/2fa-verification-email";
@@ -132,5 +133,6 @@ export const auth = betterAuth({
         await handleStripeEvents(event);
       },
     }),
+    organization(),
   ],
 });
