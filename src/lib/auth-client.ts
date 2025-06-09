@@ -1,5 +1,5 @@
+import { organizationClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-
 import { stripeClient } from "@better-auth/stripe/client";
 import {
   emailOTPClient,
@@ -15,6 +15,7 @@ export const authClient = createAuthClient({
     twoFactorClient(),
     emailOTPClient(),
     stripeClient({ subscription: true }),
+    organizationClient(),
   ],
   baseURL: process.env.BETTER_AUTH_BASE_URL,
 });

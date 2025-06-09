@@ -33,7 +33,73 @@ export const session = pgTable("session", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  activeOrganizationId: text("active_organization_id"), // Added for better-auth organization plugin
 });
+
+// New schemas for better-auth organization plugin
+
+export const organization = pgTable("organization", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(), // Assuming slug should be unique
+  logo: text("logo"),
+  metadata: text("metadata"), // Stored as JSON string or text
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(), // Added for consistency
+});
+
+export const member = pgTable("member", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  role: text("role").notNull(), // e.g., 'owner', 'admin', 'member'
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(), // Added for consistency
+  // teamId: text("team_id").references(() => team.id, { onDelete: "set null" }), // Optional: if using teams
+});
+
+export const invitation = pgTable("invitation", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  inviterId: text("inviter_id") // This should reference the member ID of the inviter
+    .notNull()
+    .references(() => member.id, { onDelete: "cascade" }), // Or user.id if inviter is just a user
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  role: text("role").notNull(),
+  status: text("status").notNull(), // e.g., 'pending', 'accepted', 'rejected', 'expired'
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(), // Added for consistency
+  // teamId: text("team_id").references(() => team.id, { onDelete: "set null" }), // Optional: if using teams
+});
+
+export const team = pgTable("team", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const organizationInsertSchema = createInsertSchema(organization);
+export const organizationSelectSchema = createSelectSchema(organization);
+
+export const memberInsertSchema = createInsertSchema(member);
+export const memberSelectSchema = createSelectSchema(member);
+
+export const invitationInsertSchema = createInsertSchema(invitation);
+export const invitationSelectSchema = createSelectSchema(invitation);
+
+export const teamInsertSchema = createInsertSchema(team);
+export const teamSelectSchema = createSelectSchema(team);
 
 export const account = pgTable("account", {
   id: text("id").primaryKey(),
