@@ -1,19 +1,64 @@
 /// <reference types="cypress" />
 
-describe("Authentication flow", () => {
-  it("should sign up a new user", () => {
-    cy.visit("http://localhost:3000/register");
+describe("User Registration", () => {
+  beforeEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.visit("/en/register");
+  });
 
-    // fill out the signup form
+  it("Should register a new user with valid credentials", () => {
+    const timestamp = Date.now();
+    const testEmail = `test${timestamp}@example.com`;
+
+    // Mock the Better Auth registration endpoint
+    cy.intercept("POST", "/api/auth/sign-up/email", {
+      statusCode: 200,
+      body: {
+        success: true,
+        user: {
+          id: `user-${timestamp}`,
+          email: testEmail,
+          name: "Test User"
+        },
+        redirect: "/en"
+      }
+    }).as("registerRequest");
+
     cy.get('input[name="name"]').type("Test User");
-    cy.get('input[name="email"]').type(`testuser_${Date.now()}@example.com`);
-    cy.get('input[name="password"]').type("TestPassword123");
+    cy.get('input[name="email"]').type(testEmail);
+    cy.get('input[name="password"]').type("Test1234@");
 
-    //submit the form
     cy.get('button[type="submit"]').click();
 
-    // assert that signup was successful
-    cy.url().should("include", "/");
-    cy.contains("Next Starter Template").should("be.visible");
+    // Wait for the mocked registration request
+    cy.wait("@registerRequest");
+
+    // Should redirect after successful registration
+    cy.url().should("include", "/en");
+    cy.contains("Next.js Starter Template").should("be.visible");
+  });
+
+  it("Should show validation errors for weak password", () => {
+    cy.get('input[name="name"]').type("Test User");
+    cy.get('input[name="email"]').type("test@example.com");
+    cy.get('input[name="password"]').type("weak");
+
+    cy.get('button[type="submit"]').click();
+
+    // Check for validation error message
+    cy.contains(/password/i).should("be.visible");
+  });
+
+  it("Should show error for invalid email", () => {
+    cy.get('input[name="name"]').type("Test User");
+    cy.get('input[name="email"]').type("invalid-email");
+    cy.get('input[name="password"]').type("Test1234@");
+
+    cy.get('button[type="submit"]').click();
+
+    // Should show validation error for invalid email format
+    cy.url().should("include", "/register"); // Should stay on register page
+    cy.contains(/email|invalid/i).should("be.visible");
   });
 });
