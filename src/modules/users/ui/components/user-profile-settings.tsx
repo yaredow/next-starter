@@ -1,7 +1,11 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { Suspense, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ErrorBoundary } from "react-error-boundary";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,50 +16,47 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
-import { ErrorBoundary } from "react-error-boundary";
-import { trpc } from "@/trpc/client";
-import { Loader2 } from "lucide-react";
-import { tryCatch } from "@/lib/try-catch";
 import { authClient } from "@/lib/auth-client";
+import { tryCatch } from "@/lib/try-catch";
 import { UpdatePasswordForm } from "@/modules/auth/ui/components/update-password-form";
+import { useTRPC } from "@/trpc/client";
 
-interface UserProfileSettingsProps {
+type UserProfileSettingsProps = {
   userId: string;
-}
-
-export const UserProfileSettings = ({ userId }: UserProfileSettingsProps) => {
-  return (
-    <Suspense
-      fallback={
-        <Loader2 className="mx-auto flex min-h-screen animate-spin items-center justify-center" />
-      }
-    >
-      <ErrorBoundary fallback={<div>Failed to load user profile settings</div>}>
-        <UserProfileSettingsSuspense userId={userId} />
-      </ErrorBoundary>
-    </Suspense>
-  );
 };
 
+export const UserProfileSettings = ({ userId }: UserProfileSettingsProps) => (
+  <Suspense
+    fallback={
+      <Loader2 className="mx-auto flex min-h-screen animate-spin items-center justify-center" />
+    }
+  >
+    <ErrorBoundary fallback={<div>Failed to load user profile settings</div>}>
+      <UserProfileSettingsSuspense userId={userId} />
+    </ErrorBoundary>
+  </Suspense>
+);
+
 const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
+  const trpc = useTRPC();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [_email, setEmail] = useState("");
+  const [_currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
-  const [user] = trpc.users.getUser.useSuspenseQuery({ id: userId });
+  const { data: user } = useSuspenseQuery(
+    trpc.users.getUser.queryOptions({ id: userId })
+  );
 
   // Handle profile update
   const handleUpdateProfile = async () => {
     const { error } = await tryCatch(
       authClient.updateUser({
         name,
-      }),
+      })
     );
 
     if (error) {
@@ -66,7 +67,7 @@ const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
   };
 
   // Handle password update
-  const handleUpdatePassword = () => {
+  const _handleUpdatePassword = () => {
     if (newPassword !== confirmPassword) {
       toast("Passwords don't match", {
         description: "New password and confirmation don't match.",
@@ -85,7 +86,7 @@ const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
   };
 
   // Handle account deletion
-  const handleDeleteAccount = () => {
+  const _handleDeleteAccount = () => {
     // In a real app, you would call an API here
     toast("Account deleted", {
       description: "Your account has been permanently deleted.",
@@ -105,17 +106,17 @@ const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
-                value={user.name}
                 onChange={(e) => setName(e.target.value)}
+                value={user.name}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 value={user.email}
-                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </CardContent>
@@ -148,13 +149,13 @@ const UserProfileSettingsSuspense = ({ userId }: UserProfileSettingsProps) => {
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="two-factor">Two-factor authentication</Label>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Add an extra layer of security to your account
                 </p>
               </div>
               <Switch
-                id="two-factor"
                 checked={twoFactorEnabled}
+                id="two-factor"
                 onCheckedChange={setTwoFactorEnabled}
               />
             </div>

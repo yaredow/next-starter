@@ -1,20 +1,18 @@
-import { headers } from "next/headers";
-import { eq, lt } from "drizzle-orm";
-import superjson from "superjson";
-import { cache } from "react";
-
 import { initTRPC, TRPCError } from "@trpc/server";
-import { ratelimit } from "@/lib/ratelimit";
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
+import superjson from "superjson";
+import { db } from "@/db";
 import { user } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { db } from "@/db";
+import { ratelimit } from "@/lib/ratelimit";
 
-export const createTRPCContext = cache(async () => {
+export const createTRPCContext = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
-  const user = session?.user;
+  const sessionUser = session?.user;
 
-  return { userId: user?.id };
-});
+  return { userId: sessionUser?.id };
+};
 
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 
@@ -62,5 +60,5 @@ export const protectedProcedure = t.procedure.use(
         user: loggedInUser,
       },
     });
-  },
+  }
 );

@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import type Stripe from "stripe";
 
 export const allowedEvents: Stripe.Event.Type[] = [
   "checkout.session.completed",

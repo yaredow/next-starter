@@ -1,10 +1,9 @@
 import Link from "next/link";
-
-import UserButton from "@/modules/auth/ui/components/user-button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Button } from "@/components/ui/button";
-import { getSession } from "@/lib/session";
 import { LangSwitcher } from "@/components/lang-switcher";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { getSession } from "@/lib/session";
+import UserButton from "@/modules/auth/ui/components/user-button";
 
 export const Header = async () => {
   const session = await getSession();
@@ -13,7 +12,7 @@ export const Header = async () => {
     <header className="border-b px-12 py-4" data-testid="side-header">
       <div className="flex items-center justify-between">
         <div>
-          <Link href="/" className="text-xl font-semibold">
+          <Link className="font-semibold text-xl" href="/">
             Next-starter
           </Link>
         </div>
@@ -22,14 +21,14 @@ export const Header = async () => {
           <LangSwitcher />
           <nav className="hidden items-center space-x-4 md:flex">
             <Link
+              className="font-medium text-sm transition-colors hover:text-primary"
               href="/pricing"
-              className="hover:text-primary text-sm font-medium transition-colors"
             >
               Pricing
             </Link>
             <Link
+              className="font-medium text-sm transition-colors hover:text-primary"
               href="/about"
-              className="hover:text-primary text-sm font-medium transition-colors"
             >
               About
             </Link>

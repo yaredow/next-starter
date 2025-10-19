@@ -6,9 +6,9 @@ import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-interface ThemeToggleProps {
+type ThemeToggleProps = {
   className?: string;
-}
+};
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const [isDark, setIsDark] = useState(true);
@@ -21,20 +21,19 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   };
 
   return (
-    <div
+    <button
       className={cn(
         "flex h-8 w-16 cursor-pointer rounded-full p-1 transition-all duration-300",
         isDark
           ? "border border-zinc-800 bg-zinc-950"
           : "border border-zinc-200 bg-white",
-        className,
+        className
       )}
       onClick={() => {
         setIsDark(!isDark);
         onThemeToggle();
       }}
-      role="button"
-      tabIndex={0}
+      type="button"
     >
       <div className="flex w-full items-center justify-between">
         <div
@@ -42,7 +41,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
             "flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300",
             isDark
               ? "translate-x-0 transform bg-zinc-800"
-              : "translate-x-8 transform bg-gray-200",
+              : "translate-x-8 transform bg-gray-200"
           )}
         >
           {isDark ? (
@@ -54,7 +53,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         <div
           className={cn(
             "flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300",
-            isDark ? "bg-transparent" : "-translate-x-8 transform",
+            isDark ? "bg-transparent" : "-translate-x-8 transform"
           )}
         >
           {isDark ? (
@@ -64,6 +63,6 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
           )}
         </div>
       </div>
-    </div>
+    </button>
   );
 }

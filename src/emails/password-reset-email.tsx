@@ -10,13 +10,12 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import * as React from "react";
 import { Tailwind } from "@react-email/tailwind";
 
-interface PasswordResetEmailProps {
+type PasswordResetEmailProps = {
   firstName: string;
   resetUrl: string;
-}
+};
 
 export default function PasswordResetEmail({
   firstName,
@@ -30,11 +29,11 @@ export default function PasswordResetEmail({
         <Body className="bg-white font-sans">
           <Container className="items-center rounded-lg border border-gray-300 p-4 shadow-lg">
             <Img
-              src="https://res.cloudinary.com/diqgie9yt/image/upload/v1716035067/konjo-habesha/logo_ktkdhl.png"
-              width="50"
-              height="50"
               alt="Konjo Habesha Fashion Logo"
               className="mx-auto flex items-center justify-center"
+              height="50"
+              src="https://res.cloudinary.com/diqgie9yt/image/upload/v1716035067/konjo-habesha/logo_ktkdhl.png"
+              width="50"
             />
             <Text className="text-lg">Dear {firstName},</Text>
             <Text className="text-normal">
@@ -62,7 +61,7 @@ export default function PasswordResetEmail({
               The Konjo Habesha Team
             </Text>
             <Hr className="border-2" />
-            <Text className="text-normal bg-background/20">your location</Text>
+            <Text className="bg-background/20 text-normal">your location</Text>
           </Container>
         </Body>
       </Tailwind>

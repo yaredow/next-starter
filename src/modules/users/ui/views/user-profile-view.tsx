@@ -5,19 +5,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { HydrateClient } from "@/trpc/server";
 import { UserProfileSection } from "../sections/user-profile-section";
 
-interface UserProfileViewProps {
+type UserProfileViewProps = {
   userId: string;
-}
+};
 
 export const UserProfileView = ({ userId }: UserProfileViewProps) => {
-  prefetch(trpc.users.getUser.queryOptions({ id: userId }));
+  // Client component handles its own data fetching with useSuspenseQuery
 
   return (
     <div className="container py-10">
-      <h1 className="mb-6 text-3xl font-bold">Your Profile</h1>
+      <h1 className="mb-6 font-bold text-3xl">Your Profile</h1>
       <Card>
         <CardHeader>
           <CardTitle>Profile</CardTitle>

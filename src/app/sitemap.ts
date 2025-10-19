@@ -1,7 +1,7 @@
+import type { MetadataRoute } from "next";
 import { SiteConfig } from "@/configs/site.config";
-import { MetadataRoute } from "next";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   // You can fetch dynamic routes here from your API/database
   // const products = await getProducts();
 

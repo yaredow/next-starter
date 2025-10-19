@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-
-import { UserProfileSettingsView } from "@/modules/users/ui/views/user-profile-settings-view";
 import { getSession } from "@/lib/session";
+import { UserProfileSettingsView } from "@/modules/users/ui/views/user-profile-settings-view";
 
 const SettingsPage = async () => {
   const session = await getSession();

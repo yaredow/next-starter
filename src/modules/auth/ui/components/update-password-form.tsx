@@ -1,9 +1,17 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -13,20 +21,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-
-import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirm";
-import { UpdatePasswordInput, updatePasswordSchema } from "../../schema";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
+import { type UpdatePasswordInput, updatePasswordSchema } from "../../schema";
 
 export function UpdatePasswordForm() {
   const router = useRouter();
@@ -68,7 +65,7 @@ export function UpdatePasswordForm() {
               description: ctx.error.message,
             });
           },
-        },
+        }
       );
     }
   }
@@ -82,7 +79,7 @@ export function UpdatePasswordForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="currentPassword"
@@ -90,7 +87,7 @@ export function UpdatePasswordForm() {
                 <FormItem className="space-y-2">
                   <FormLabel>Current Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input placeholder="••••••••" type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,7 +100,7 @@ export function UpdatePasswordForm() {
                 <FormItem className="space-y-2">
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input placeholder="••••••••" type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,7 +113,7 @@ export function UpdatePasswordForm() {
                 <FormItem className="space-y-2">
                   <FormLabel>Confirm New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input placeholder="••••••••" type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

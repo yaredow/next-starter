@@ -1,8 +1,8 @@
 "use client";
 
-import type React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type React from "react";
 import { cn } from "@/lib/utils";
 
 export default function UserLayout({
@@ -25,14 +25,14 @@ export default function UserLayout({
           <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
             {navigation.map((item) => (
               <Link
-                key={item.href}
-                href={item.href}
                 className={cn(
-                  "flex items-center rounded-md px-3 py-2 text-sm font-medium",
+                  "flex items-center rounded-md px-3 py-2 font-medium text-sm",
                   pathname === item.href
                     ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted",
+                    : "hover:bg-muted"
                 )}
+                href={item.href}
+                key={item.href}
               >
                 {item.name}
               </Link>
