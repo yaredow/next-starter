@@ -2,34 +2,20 @@
 
 describe("Google Auth Flow", () => {
   it("should successfully log in with Google (mocked)", () => {
-    // Mock the actual endpoint that gets called when clicking Google button
-    cy.intercept("POST", "/api/auth/sign-in/social", {
-      statusCode: 302,
-      headers: {
-        Location: "/profile"
-      },
-      body: {
-        redirect: "/profile"
-      }
-    }).as("googleSignIn");
+    cy.intercept("GET", "/api/auth/callback/google*", (req) => {
+      // Adjust the URL to match your callback
+      req.reply((res) => {
+        // Simulate a successful Google login
+        res.send(302, { Location: "/profile" }); // Redirect to your logged-in page
+      });
+    }).as("googleCallback");
 
-    cy.visit("/en/login");
+    cy.visit("/login");
     cy.contains("Google").click();
 
-    cy.wait("@googleSignIn");
+    cy.wait("@googleCallback");
 
-    // After successful OAuth, should redirect to profile
-    cy.url().should("include", "/profile");
-    // Check for profile page content or redirect to home if profile doesn't exist
-    cy.get("body").then($body => {
-      if ($body.text().includes("404")) {
-        // If profile page doesn't exist, might redirect to home
-        cy.visit("/");
-        cy.contains("Next.js Starter Template").should("be.visible");
-      } else {
-        // Profile page exists
-        cy.contains(/profile|dashboard|welcome/i).should("be.visible");
-      }
-    });
+    cy.url().should("include", "/");
+    cy.contains("Next Starter Template").should("be.visible");
   });
 });

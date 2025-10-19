@@ -1,13 +1,13 @@
 {
-  "HomePage": {
-    "title": "Hello world!",
-    "about": "Go to the about page",
-    "mainHeading": "Next.js Starter Template",
-    "subHeading": "A minimal template to kickstart your Next.js projects.",
-    "getStartedButton": "Get Started",
-    "githubButton": "Github"
-  },
-  "label": "Select Language",
-  "en": "English",
-  "de": "German"
+	"HomePage": {
+		"title": "Hello world!",
+		"about": "Go to the about page",
+		"mainHeading": "Next.js Starter Template",
+		"subHeading": "A minimal template to kickstart your Next.js projects.",
+		"getStartedButton": "Get Started",
+		"githubButton": "Github"
+	},
+	"label": "Select Language",
+	"en": "English",
+	"de": "German"
 }

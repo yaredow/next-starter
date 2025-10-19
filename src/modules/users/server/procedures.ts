@@ -1,81 +1,80 @@
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-
-import {
-  baseProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from "@/trpc/init";
-import { verifyPassword } from "@/lib/utils";
-import { account, user } from "@/db/schema";
-import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
+import { account, user } from "@/db/schema";
+import { verifyPassword } from "@/lib/utils";
+import {
+	baseProcedure,
+	createTRPCRouter,
+	protectedProcedure,
+} from "@/trpc/init";
 
 export const userRouter = createTRPCRouter({
-  greeting: baseProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-  getUser: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .query(async ({ ctx }) => {
-      const { userId: id } = ctx;
+	greeting: baseProcedure
+		.input(z.object({ text: z.string() }))
+		.query(({ input }) => {
+			return {
+				greeting: `Hello ${input.text}`,
+			};
+		}),
+	getUser: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.query(async ({ ctx }) => {
+			const { userId: id } = ctx;
 
-      if (!id) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
+			if (!id) {
+				throw new TRPCError({ code: "UNAUTHORIZED" });
+			}
 
-      const [userData] = await db.select().from(user).where(eq(user.id, id));
+			const [userData] = await db.select().from(user).where(eq(user.id, id));
 
-      return userData;
-    }),
-  verifyUserPassword: protectedProcedure
-    .input(
-      z.object({
-        password: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx;
-      const { password } = input;
+			return userData;
+		}),
+	verifyUserPassword: protectedProcedure
+		.input(
+			z.object({
+				password: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { userId } = ctx;
+			const { password } = input;
 
-      if (!userId) {
-        return new TRPCError({ code: "UNAUTHORIZED" });
-      }
+			if (!userId) {
+				return new TRPCError({ code: "UNAUTHORIZED" });
+			}
 
-      const [userAccount] = await db
-        .select()
-        .from(account)
-        .where(eq(account.userId, userId));
+			const [userAccount] = await db
+				.select()
+				.from(account)
+				.where(eq(account.userId, userId));
 
-      if (!userAccount.password) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Password is not set",
-        });
-      }
+			if (!userAccount.password) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Password is not set",
+				});
+			}
 
-      console.log("Password from account", userAccount.password);
+			console.log("Password from account", userAccount.password);
 
-      const isPasswordCorrect = await verifyPassword({
-        password,
-        hash: userAccount.password,
-      });
+			const isPasswordCorrect = await verifyPassword({
+				password,
+				hash: userAccount.password,
+			});
 
-      if (!isPasswordCorrect) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Incorrect password",
-        });
-      }
+			if (!isPasswordCorrect) {
+				throw new TRPCError({
+					code: "UNAUTHORIZED",
+					message: "Incorrect password",
+				});
+			}
 
-      return { succcess: true };
-    }),
+			return { succcess: true };
+		}),
 });
