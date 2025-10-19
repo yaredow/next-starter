@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 import bcrypt from "bcryptjs";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -20,8 +20,10 @@ export async function verifyPassword(data: {
   return await bcrypt.compare(password, hash);
 }
 
+const CENTS_PER_DOLLAR = 100;
+
 export function convertToSubCurrency(amount: number): number {
-  return Math.round(amount * 100);
+  return Math.round(amount * CENTS_PER_DOLLAR);
 }
 
 export function capitalizeFullName(fullName: string): string {

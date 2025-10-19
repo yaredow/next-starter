@@ -1,5 +1,8 @@
 "use client";
 
+import { AlertTriangle } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,11 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
-import { toast } from "sonner";
-import { AlertTriangle } from "lucide-react";
-import { useTRPC } from "@/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { trpc } from "@/trpc/client";
 
 export const DangerZoneCard = () => {
   // State for password verification
@@ -32,10 +31,8 @@ export const DangerZoneCard = () => {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
-  const trpc = useTRPC();
-  const { mutate: verifyPassword, isPending } = useMutation(
-    trpc.users.verifyUserPassword.mutationOptions(),
-  );
+  const { mutate: verifyPassword, isPending } =
+    trpc.users.verifyUserPassword.useMutation();
 
   // Step 1: Show password dialog when delete button is clicked
   const handleDeleteButtonClick = () => {
@@ -44,7 +41,7 @@ export const DangerZoneCard = () => {
   };
 
   // Step 2: Verify password
-  const handlePasswordVerify = async () => {
+  const handlePasswordVerify = () => {
     if (!password) {
       toast.error("Please enter your password");
       return;
@@ -53,7 +50,7 @@ export const DangerZoneCard = () => {
     verifyPassword(
       { password },
       {
-        onSuccess: async () => {
+        onSuccess: () => {
           setIsVerified(true);
         },
         onError: () => {
@@ -61,7 +58,7 @@ export const DangerZoneCard = () => {
             description: "Please enter your correct password to continue",
           });
         },
-      },
+      }
     );
   };
 
@@ -72,7 +69,7 @@ export const DangerZoneCard = () => {
     try {
       await authClient.deleteUser(
         {
-          password: password,
+          password,
           callbackURL: "/login",
         },
         {
@@ -87,9 +84,9 @@ export const DangerZoneCard = () => {
             setIsLoading(false);
             setShowPasswordDialog(false);
           },
-        },
+        }
       );
-    } catch (error) {
+    } catch (_error) {
       setIsLoading(false);
       toast.error("Something went wrong", {
         description: "Please try again later",
@@ -120,9 +117,9 @@ export const DangerZoneCard = () => {
               permanently removes your account and all associated data.
             </p>
             <Button
-              variant="destructive"
-              onClick={handleDeleteButtonClick}
               disabled={isLoading}
+              onClick={handleDeleteButtonClick}
+              variant="destructive"
             >
               {isLoading ? "Deleting..." : "Delete Account"}
             </Button>
@@ -131,7 +128,7 @@ export const DangerZoneCard = () => {
       </Card>
 
       {/* Password verification dialog */}
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+      <Dialog onOpenChange={setShowPasswordDialog} open={showPasswordDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Delete Account</DialogTitle>
@@ -144,7 +141,7 @@ export const DangerZoneCard = () => {
 
           <div className="grid gap-4 py-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="text-destructive h-5 w-5" />
+              <AlertTriangle className="h-5 w-5 text-destructive" />
               <p className="text-muted-foreground text-sm">
                 This action is irreversible. All your data will be permanently
                 deleted.
@@ -155,20 +152,20 @@ export const DangerZoneCard = () => {
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Password</Label>
                 <Input
-                  id="confirm-password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
+                  id="confirm-password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  type="password"
+                  value={password}
                 />
               </div>
             )}
 
             {isVerified && (
-              <div className="bg-destructive/10 rounded-md p-4">
+              <div className="rounded-md bg-destructive/10 p-4">
                 <div className="flex items-center justify-center">
-                  <p className="text-destructive text-sm font-medium">
+                  <p className="font-medium text-destructive text-sm">
                     Are you sure you want to delete your account?
                   </p>
                 </div>
@@ -178,28 +175,28 @@ export const DangerZoneCard = () => {
 
           <DialogFooter>
             <Button
-              variant="outline"
-              onClick={handleCancel}
               disabled={isPending || isLoading}
+              onClick={handleCancel}
+              variant="outline"
             >
               Cancel
             </Button>
 
-            {!isVerified ? (
+            {isVerified ? (
               <Button
+                disabled={isLoading}
+                onClick={handleDeleteAccount}
                 variant="destructive"
-                onClick={handlePasswordVerify}
-                disabled={!password || isPending}
               >
-                {isPending ? "Verifying..." : "Verify"}
+                {isLoading ? "Deleting..." : "Delete Account"}
               </Button>
             ) : (
               <Button
+                disabled={!password || isPending}
+                onClick={handlePasswordVerify}
                 variant="destructive"
-                onClick={handleDeleteAccount}
-                disabled={isLoading}
               >
-                {isLoading ? "Deleting..." : "Delete Account"}
+                {isPending ? "Verifying..." : "Verify"}
               </Button>
             )}
           </DialogFooter>

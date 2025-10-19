@@ -1,5 +1,5 @@
+import type { Metadata } from "next";
 import { PricingPlans } from "@/modules/pricing/ui/components/pricing-plans";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Pricing - NextSaaS",
@@ -10,7 +10,7 @@ export default function PricingPage() {
   return (
     <div className="container py-6 md:py-16">
       <div className="mx-auto mb-12 max-w-3xl text-center">
-        <div className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+        <div className="font-bold text-3xl tracking-tight sm:text-4xl md:text-5xl">
           Simple, transparent pricing
         </div>
         <p className="mt-4 text-lg text-muted-foreground">

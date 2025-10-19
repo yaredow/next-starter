@@ -1,10 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
-import { User } from "better-auth";
-import Image from "next/image";
-import Link from "next/link";
+import type { User } from "better-auth";
 import {
   Check,
   LogOutIcon,
@@ -14,31 +10,34 @@ import {
   Sun,
   User as UserIcon,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { authClient } from "@/lib/auth-client";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSubContent,
-  DropdownMenuTrigger,
   DropdownMenuLabel,
   DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuSub,
+  DropdownMenuSubContent,
   DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { authClient } from "@/lib/auth-client";
 
-interface UserButtonProps {
+type UserButtonProps = {
   user: User;
-}
+};
 
 export default function UserButton({ user }: UserButtonProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { name, email, image } = user;
-  console.log({ image });
 
   const onSignOut = () => {
     authClient.signOut({
@@ -63,10 +62,10 @@ export default function UserButton({ user }: UserButtonProps) {
         <Avatar className="relative size-10 rounded-full border border-neutral-300 transition hover:opacity-75">
           {image ? (
             <Image
-              src={image}
               alt="User Avatar"
-              fill
               className="rounded-full object-cover"
+              fill
+              src={image}
             />
           ) : (
             <AvatarFallback className="flex items-center justify-center bg-neutral-200 font-medium text-neutral-500">
@@ -79,13 +78,13 @@ export default function UserButton({ user }: UserButtonProps) {
         <DropdownMenuLabel>Logged in as {name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex items-center">
+          <Link className="flex items-center" href="/profile">
             <UserIcon className="mr-2 size-4" />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile/settings" className="flex items-center">
+          <Link className="flex items-center" href="/profile/settings">
             <Settings className="mr-2 size-4" />
             Settings
           </Link>

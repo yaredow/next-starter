@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "target": "ES2017"
+    "target": "ES2017",
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
@@ -30,5 +31,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "./cypress", "./cypress.config.ts"]
+  "exclude": [
+    "node_modules",
+    "./cypress",
+    "./cypress.config.ts",
+    "cypress/**/*.*"
+  ]
 }

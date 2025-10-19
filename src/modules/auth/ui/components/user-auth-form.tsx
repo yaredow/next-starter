@@ -2,14 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
-
-import { buttonVariants } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Icons } from "@/components/shared/icons";
-import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,17 +15,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { PasswordInput } from "./password-input";
-import {
-  SignInData,
-  signInSchema,
-  SignUpData,
-  signUpSchema,
-  userAuthData,
-} from "../../schema";
+import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { tryCatch } from "@/lib/try-catch";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import {
+  type SignInData,
+  type SignUpData,
+  signInSchema,
+  signUpSchema,
+  type userAuthData,
+} from "../../schema";
+import { PasswordInput } from "./password-input";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   type?: string;
@@ -37,7 +35,7 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
 export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-  const [isSignup, setIsSignup] = useState<boolean>(type === "register");
+  const [isSignup, _setIsSignup] = useState<boolean>(type === "register");
   const router = useRouter();
 
   const form = useForm<userAuthData>({
@@ -107,8 +105,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         onSuccess: () => {
           setIsGoogleLoading(false);
         },
-        onError: (error) => {
-          console.error(error);
+        onError: (_error) => {
           setIsGoogleLoading(false);
         },
       },
@@ -128,13 +125,13 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      className={cn(isLoading && "opacity-50")}
-                      placeholder="Your Name"
-                      type="text"
                       autoCapitalize="none"
                       autoComplete="name"
                       autoCorrect="off"
+                      className={cn(isLoading && "opacity-50")}
                       disabled={isLoading || isGoogleLoading}
+                      placeholder="Your Name"
+                      type="text"
                       {...field}
                     />
                   </FormControl>
@@ -153,13 +150,13 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      className={cn(isLoading && "opacity-50")}
-                      placeholder="name@example.com"
-                      type="email"
                       autoCapitalize="none"
                       autoComplete="email"
                       autoCorrect="off"
+                      className={cn(isLoading && "opacity-50")}
                       disabled={isLoading || isGoogleLoading}
+                      placeholder="name@example.com"
+                      type="email"
                       {...field}
                     />
                   </FormControl>
@@ -182,9 +179,9 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
               )}
             />
             <button
-              type="submit"
               className={cn(buttonVariants())}
               disabled={isLoading}
+              type="submit"
             >
               {isLoading && (
                 <Icons.spinner className="mr-2 size-4 animate-spin" />
@@ -201,18 +198,18 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background text-muted-foreground px-2">
+          <span className="bg-background px-2 text-muted-foreground">
             Or continue with
           </span>
         </div>
       </div>
       <button
-        type="button"
         className={cn(buttonVariants({ variant: "outline" }))}
+        disabled={isGoogleLoading || isLoading}
         onClick={() => {
           handleSocialLogin();
         }}
-        disabled={isGoogleLoading || isLoading}
+        type="button"
       >
         {isGoogleLoading ? (
           <Icons.spinner className="mr-2 size-4 animate-spin" />

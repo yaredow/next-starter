@@ -1,20 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { Loader2, Shield } from "lucide-react";
-import { Suspense, useState } from "react";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { authClient } from "@/lib/auth-client";
-
+import { Shield } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Icons } from "@/components/shared/icons";
 import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import {
   Card,
   CardContent,
@@ -30,18 +23,20 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-
-import { TwoFactorFormSchema, TwoFactorFormValues } from "../../schema";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { authClient } from "@/lib/auth-client";
 import { tryCatch } from "@/lib/try-catch";
-import { toast } from "sonner";
-import { ErrorBoundary } from "react-error-boundary";
-import { trpc } from "@/trpc/client";
+import { TwoFactorFormSchema, type TwoFactorFormValues } from "../../schema";
 
-interface TwoFactorFormProps {
+type TwoFactorFormProps = {
   userId: string | undefined;
-}
+};
 
-export function TwoFactorForm({ userId }: TwoFactorFormProps) {
+export function TwoFactorForm({ userId: _userId }: TwoFactorFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -102,7 +97,7 @@ export function TwoFactorForm({ userId }: TwoFactorFormProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="code"
@@ -111,11 +106,11 @@ export function TwoFactorForm({ userId }: TwoFactorFormProps) {
                   <FormControl>
                     <div className="flex justify-center">
                       <InputOTP
-                        maxLength={6}
-                        value={field.value}
-                        onChange={field.onChange}
-                        disabled={isLoading}
                         className="gap-2"
+                        disabled={isLoading}
+                        maxLength={6}
+                        onChange={field.onChange}
+                        value={field.value}
                       >
                         <InputOTPGroup>
                           <InputOTPSlot index={0} />
@@ -135,12 +130,12 @@ export function TwoFactorForm({ userId }: TwoFactorFormProps) {
 
             <div className="text-center text-sm">
               <Button
-                variant="link"
+                className="h-auto p-0 text-muted-foreground hover:text-primary"
+                disabled={isLoading}
+                onClick={handleResendCode}
                 size="sm"
                 type="button"
-                onClick={handleResendCode}
-                disabled={isLoading}
-                className="h-auto p-0 text-muted-foreground hover:text-primary"
+                variant="link"
               >
                 Didn&apos;t receive a code?
               </Button>
@@ -150,18 +145,18 @@ export function TwoFactorForm({ userId }: TwoFactorFormProps) {
       </CardContent>
       <CardFooter className="flex justify-between gap-2 border-t bg-muted/50 p-4">
         <Button
-          variant="outline"
           className="w-full"
           disabled={isLoading}
-          type="button"
           onClick={() => router.push("/login")}
+          type="button"
+          variant="outline"
         >
           Cancel
         </Button>
         <Button
           className="w-full"
-          onClick={form.handleSubmit(onSubmit)}
           disabled={isLoading || !form.formState.isValid}
+          onClick={form.handleSubmit(onSubmit)}
         >
           {isLoading ? (
             <>

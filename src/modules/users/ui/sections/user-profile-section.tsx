@@ -1,32 +1,28 @@
 "use client";
 
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-import { Skeleton } from "@/components/ui/skeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/trpc/client";
 
-interface UserProfileSectionProps {
+type UserProfileSectionProps = {
   userId: string;
-}
-
-export const UserProfileSection = ({ userId }: UserProfileSectionProps) => {
-  return (
-    <Suspense fallback={<UserProfileSkeleton />}>
-      <ErrorBoundary fallback={<div>Failed to load user information</div>}>
-        <UserProfileSectionSuspense userId={userId} />
-      </ErrorBoundary>
-    </Suspense>
-  );
 };
+
+export const UserProfileSection = ({ userId }: UserProfileSectionProps) => (
+  <Suspense fallback={<UserProfileSkeleton />}>
+    <ErrorBoundary fallback={<div>Failed to load user information</div>}>
+      <UserProfileSectionSuspense userId={userId} />
+    </ErrorBoundary>
+  </Suspense>
+);
 
 const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
   const trpc = useTRPC();
   const { data: user } = useSuspenseQuery(
-    trpc.users.getUser.queryOptions({ id: userId }),
+    trpc.users.getUser.queryOptions({ id: userId })
   );
 
   const initials = user.name
@@ -41,31 +37,31 @@ const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
       <div className="flex flex-col items-center gap-6 md:flex-row">
         <Avatar className="h-24 w-24">
           <AvatarImage
-            src={user.image || "/images/placeholder"}
             alt={user.name}
+            src={user.image || "/images/placeholder"}
           />
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
         <div className="space-y-1">
-          <h3 className="text-2xl font-bold">{user.name}</h3>
+          <h3 className="font-bold text-2xl">{user.name}</h3>
           <p className="text-muted-foreground text-sm">{user.email}</p>
         </div>
       </div>
 
       <div className="grid gap-6 border-t pt-4 md:grid-cols-2">
         <div className="space-y-1">
-          <p className="text-sm font-medium">Member since</p>
+          <p className="font-medium text-sm">Member since</p>
           <p className="text-muted-foreground text-sm">
             {new Date(user.createdAt).toLocaleDateString()}
           </p>
         </div>
 
         <div className="space-y-1">
-          <p className="text-sm font-medium">Email verification</p>
+          <p className="font-medium text-sm">Email verification</p>
           <div className="flex items-center">
             <div
               className={`mr-2 h-2 w-2 rounded-full ${user.emailVerified ? "bg-green-500" : "bg-amber-500"}`}
-            ></div>
+            />
             <p className="text-muted-foreground text-sm">
               {user.emailVerified ? "Verified" : "Not verified"}
             </p>
@@ -73,14 +69,14 @@ const UserProfileSectionSuspense = ({ userId }: UserProfileSectionProps) => {
         </div>
 
         <div className="space-y-1">
-          <p className="text-sm font-medium">Two-factor authentication</p>
+          <p className="font-medium text-sm">Two-factor authentication</p>
           <p className="text-muted-foreground text-sm">
             {user.twoFactorEnabled ? "Enabled" : "Disabled"}
           </p>
         </div>
 
         <div className="space-y-1">
-          <p className="text-sm font-medium">Last updated</p>
+          <p className="font-medium text-sm">Last updated</p>
           <p className="text-muted-foreground text-sm">
             {new Date(user.updatedAt).toLocaleDateString()}
           </p>

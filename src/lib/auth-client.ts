@@ -1,11 +1,11 @@
-import { organizationClient } from "better-auth/client/plugins";
-import { createAuthClient } from "better-auth/react";
 import { stripeClient } from "@better-auth/stripe/client";
 import {
   emailOTPClient,
   inferAdditionalFields,
+  organizationClient,
   twoFactorClient,
 } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
 
 import type { auth } from "./auth";
 

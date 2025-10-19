@@ -1,14 +1,14 @@
-import { Header } from "@/modules/home/ui/components/header";
+import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { Header } from "@/modules/home/ui/components/header";
 
-interface LocaleLayoutProps {
+type LocaleLayoutProps = {
   children: React.ReactNode;
   params: Promise<{
     locale: string;
   }>;
-}
+};
 
 export default async function LocaleLayout({
   children,

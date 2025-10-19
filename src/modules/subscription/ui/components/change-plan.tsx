@@ -1,5 +1,8 @@
 "use client";
 
+import { Check } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,12 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
-import { plans } from "../../constants";
 import { Label } from "@/components/ui/label";
-import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { plans } from "../../constants";
 
 export const ChangePlan = () => {
   const [currentPlan, setCurrentPlan] = useState("pro");
@@ -32,38 +32,38 @@ export const ChangePlan = () => {
       </CardHeader>
       <CardContent>
         <RadioGroup
-          value={selectedPlan}
-          onValueChange={setSelectedPlan}
           className="space-y-4"
+          onValueChange={setSelectedPlan}
+          value={selectedPlan}
         >
           {plans.map((plan) => (
             <div
-              key={plan.id}
               className={`flex items-start space-x-4 rounded-md border p-4 ${
                 selectedPlan === plan.id ? "border-primary" : ""
               }`}
+              key={plan.id}
             >
-              <RadioGroupItem value={plan.id} id={plan.id} className="mt-1" />
+              <RadioGroupItem className="mt-1" id={plan.id} value={plan.id} />
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor={plan.id} className="font-medium">
+                  <Label className="font-medium" htmlFor={plan.id}>
                     {plan.name}
                   </Label>
                   <div className="text-right">
                     <div className="font-medium">{plan.price}</div>
                     {plan.period && (
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-muted-foreground text-xs">
                         per {plan.period}
                       </div>
                     )}
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   {plan.description}
                 </p>
                 <ul className="grid gap-2 pt-2 text-sm">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
+                  {plan.features.map((feature) => (
+                    <li className="flex items-center gap-2" key={feature}>
                       <Check className="h-4 w-4 text-primary" />
                       {feature}
                     </li>
@@ -76,8 +76,8 @@ export const ChangePlan = () => {
       </CardContent>
       <CardFooter>
         <Button
-          onClick={handleChangePlan}
           disabled={selectedPlan === currentPlan}
+          onClick={handleChangePlan}
         >
           {selectedPlan === currentPlan ? "Current Plan" : "Change Plan"}
         </Button>

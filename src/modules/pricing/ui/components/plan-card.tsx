@@ -1,13 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
-import { tryCatch } from "@/lib/try-catch";
 import {
   Card,
   CardContent,
@@ -16,8 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
+import { tryCatch } from "@/lib/try-catch";
 
-interface PlanCardProps {
+type PlanCardProps = {
   name: string;
   description: string;
   price: number;
@@ -27,7 +27,7 @@ interface PlanCardProps {
   ctaText: string;
   ctaLink?: string;
   planId: string;
-}
+};
 
 export function PlanCard({
   name,
@@ -57,11 +57,10 @@ export function PlanCard({
         plan: planId,
         successUrl: "/dashboard",
         cancelUrl: "/pricing",
-      }),
+      })
     );
 
     if (error) {
-      console.error(error);
       setIsloading(false);
     }
   };
@@ -69,7 +68,7 @@ export function PlanCard({
   return (
     <Card className={popular ? "relative border-primary shadow-md" : ""}>
       {popular && (
-        <div className="absolute -top-3 left-0 right-0 mx-auto w-fit rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+        <div className="-top-3 absolute right-0 left-0 mx-auto w-fit rounded-full bg-primary px-3 py-1 font-medium text-primary-foreground text-xs">
           Most Popular
         </div>
       )}
@@ -77,14 +76,14 @@ export function PlanCard({
         <CardTitle className="text-xl">{name}</CardTitle>
         <CardDescription>{description}</CardDescription>
         <div className="mt-2">
-          <span className="text-3xl font-bold">${price}</span>
+          <span className="font-bold text-3xl">${price}</span>
           <span className="text-muted-foreground">/{interval}</span>
         </div>
       </CardHeader>
       <CardContent>
         <ul className="space-y-2">
-          {features.map((feature, i) => (
-            <li key={i} className="flex items-center">
+          {features.map((feature) => (
+            <li className="flex items-center" key={feature}>
               <Check className="mr-2 h-4 w-4 text-primary" />
               <span>{feature}</span>
             </li>
@@ -94,9 +93,9 @@ export function PlanCard({
       <CardFooter>
         {session ? (
           <Button
-            onClick={handleSubscribe}
-            disabled={isLoading}
             className={popular ? "" : "bg-muted-foreground"}
+            disabled={isLoading}
+            onClick={handleSubscribe}
             size="lg"
           >
             {isLoading ? "Processing..." : ctaText}

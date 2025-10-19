@@ -1,29 +1,26 @@
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-
+import { db } from "@/db";
+import { account, user } from "@/db/schema";
+import { verifyPassword } from "@/lib/utils";
 import {
   baseProcedure,
   createTRPCRouter,
   protectedProcedure,
 } from "@/trpc/init";
-import { verifyPassword } from "@/lib/utils";
-import { account, user } from "@/db/schema";
-import { TRPCError } from "@trpc/server";
-import { db } from "@/db";
 
 export const userRouter = createTRPCRouter({
   greeting: baseProcedure
     .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+    .query(({ input }) => ({
+      greeting: `Hello ${input.text}`,
+    })),
   getUser: protectedProcedure
     .input(
       z.object({
         id: z.string(),
-      }),
+      })
     )
     .query(async ({ ctx }) => {
       const { userId: id } = ctx;
@@ -40,7 +37,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         password: z.string(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx;
@@ -61,8 +58,6 @@ export const userRouter = createTRPCRouter({
           message: "Password is not set",
         });
       }
-
-      console.log("Password from account", userAccount.password);
 
       const isPasswordCorrect = await verifyPassword({
         password,

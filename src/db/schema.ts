@@ -1,11 +1,11 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import {
+  boolean,
+  integer,
   pgTable,
   text,
-  integer,
   timestamp,
-  boolean,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),

@@ -1,15 +1,15 @@
 "use client";
 
+import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardDescription,
   CardContent,
-  CardTitle,
+  CardDescription,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { CreditCard } from "lucide-react";
 
 export const PaymentMethodsCard = () => {
   const handleUpdatePaymentMethod = () => {
@@ -29,12 +29,12 @@ export const PaymentMethodsCard = () => {
           </div>
           <div>
             <p className="font-medium">•••• •••• •••• 4242</p>
-            <p className="text-sm text-muted-foreground">Expires 12/2024</p>
+            <p className="text-muted-foreground text-sm">Expires 12/2024</p>
           </div>
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" onClick={handleUpdatePaymentMethod}>
+        <Button onClick={handleUpdatePaymentMethod} variant="outline">
           Update Payment Method
         </Button>
       </CardFooter>

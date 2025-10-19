@@ -1,15 +1,17 @@
 import "server-only";
 
 import {
-  createTRPCOptionsProxy,
-  TRPCQueryOptions,
-} from "@trpc/tanstack-react-query";
+  dehydrate,
+  HydrationBoundary,
+  type QueryFunction,
+  type QueryKey,
+} from "@tanstack/react-query";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { cache } from "react";
+import superjson from "superjson";
 import { createTRPCContext } from "./init";
 import { makeQueryClient } from "./query-client";
 import { appRouter } from "./routers/_app";
-import { createTRPCClient, httpLink } from "@trpc/client";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 // IMPORTANT: Create a stable getter for the query client that
 //            will return the same client during the same request.
 
@@ -22,27 +24,35 @@ export function HydrateClient(props: { children: React.ReactNode }) {
   );
 }
 
-export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(
-  queryOptions: T,
-) {
-  const queryClient = getQueryClient();
-  if (queryOptions.queryKey[1]?.type === "infinite") {
-    void queryClient.prefetchInfiniteQuery(queryOptions as any);
-  } else {
-    void queryClient.prefetchQuery(queryOptions);
-  }
-}
-
 export const getQueryClient = cache(makeQueryClient);
-export const trpc = createTRPCOptionsProxy({
-  ctx: createTRPCContext,
-  router: appRouter,
-  queryClient: getQueryClient,
+
+// Server-side helpers (SSG/SSR) – typed
+export const getServerSideHelpers = cache(async () =>
+  createServerSideHelpers({
+    router: appRouter,
+    ctx: await createTRPCContext(),
+    transformer: superjson,
+  })
+);
+
+// Create a server-side caller for TRPC - typed return
+type TRPCCaller = ReturnType<typeof appRouter.createCaller>;
+const createCaller = cache(async (): Promise<TRPCCaller> => {
+  const context = await createTRPCContext();
+  return appRouter.createCaller(context);
 });
-// If your router is on a separate server, pass a client:
-createTRPCOptionsProxy({
-  client: createTRPCClient({
-    links: [httpLink({ url: "..." })],
-  }),
-  queryClient: getQueryClient,
-});
+
+// Export as an async function to ensure it's called within request context
+export const trpc: () => Promise<TRPCCaller> = async () => await createCaller();
+
+// Prefetch function for server components
+export function prefetch<TData, TKey extends QueryKey>(
+  queryKey: TKey,
+  queryFn: QueryFunction<TData, TKey>
+): Promise<void> {
+  const queryClient = getQueryClient();
+  return queryClient.prefetchQuery({
+    queryKey,
+    queryFn,
+  });
+}

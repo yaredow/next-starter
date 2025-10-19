@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
-
-import { UserProfileView } from "@/modules/users/ui/views/user-profile-view";
 import { getSession } from "@/lib/session";
-import { prefetch, trpc } from "@/trpc/server";
+import { UserProfileView } from "@/modules/users/ui/views/user-profile-view";
 
 const ProfilePage = async () => {
   const session = await getSession();

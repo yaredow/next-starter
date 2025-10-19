@@ -1,7 +1,6 @@
-import { type ReactElement } from "react";
-import { useMedia } from "react-use";
-
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { type ReactElement, useRef } from "react";
+import { useMedia } from "react-use";
 import {
   Dialog,
   DialogContent,
@@ -27,10 +26,12 @@ export default function ResponsiveModal({
   onOpenChange,
 }: ResponsiveModalProps): ReactElement {
   const isDesktop = useMedia("(min-width: 1024px)", true);
+  const drawerContentRef = useRef<HTMLDivElement>(null);
+  const drawerTitleRef = useRef<HTMLHeadingElement>(null);
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog onOpenChange={onOpenChange} open={open}>
         <VisuallyHidden>
           <DialogHeader>
             <DialogTitle>Title</DialogTitle>
@@ -44,11 +45,11 @@ export default function ResponsiveModal({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+    <Drawer onOpenChange={onOpenChange} open={open}>
+      <DrawerContent ref={drawerContentRef}>
         <VisuallyHidden>
           <DrawerHeader>
-            <DrawerTitle>Title</DrawerTitle>
+            <DrawerTitle ref={drawerTitleRef}>Title</DrawerTitle>
           </DrawerHeader>
         </VisuallyHidden>
         <div className="hide-scrollbar max-h-[85vh] overflow-y-auto">

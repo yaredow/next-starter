@@ -1,17 +1,9 @@
 "use client";
 
-import { ErrorBoundary } from "react-error-boundary";
 import { Suspense, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { toast } from "sonner";
-
-import { Skeleton } from "@/components/ui/skeleton";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { tryCatch } from "@/lib/try-catch";
-import { useTRPC } from "@/trpc/client";
 import {
   Card,
   CardContent,
@@ -27,54 +19,45 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { authClient } from "@/lib/auth-client";
+import { tryCatch } from "@/lib/try-catch";
+import { trpc } from "@/trpc/client";
 
-interface SecuritySettingsProps {
+type SecuritySettingsProps = {
   userId: string;
-}
-
-export const SecuritySettings = ({ userId }: SecuritySettingsProps) => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Security</CardTitle>
-        <CardDescription>
-          Manage your account security settings.
-        </CardDescription>
-      </CardHeader>
-      <ErrorBoundary fallback={<p>Error</p>}>
-        <Suspense fallback={<SecuritySkeleton />}>
-          <SecurityContent userId={userId} />
-        </Suspense>
-      </ErrorBoundary>
-    </Card>
-  );
 };
+
+export const SecuritySettings = ({ userId }: SecuritySettingsProps) => (
+  <Card>
+    <CardHeader>
+      <CardTitle>Security</CardTitle>
+      <CardDescription>Manage your account security settings.</CardDescription>
+    </CardHeader>
+    <ErrorBoundary fallback={<p>Error</p>}>
+      <Suspense fallback={<SecuritySkeleton />}>
+        <SecurityContent userId={userId} />
+      </Suspense>
+    </ErrorBoundary>
+  </Card>
+);
 
 const SecurityContent = ({ userId }: SecuritySettingsProps) => {
   const [password, setPassword] = useState("");
   const [showPasswordField, setShowPasswordField] = useState(false);
   const [targetState, setTargetState] = useState(false);
 
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const verifyPasswordMutation = useMutation(
-    trpc.users.verifyUserPassword.mutationOptions(),
-  );
+  const utils = trpc.useUtils();
+  const verifyPasswordMutation = trpc.users.verifyUserPassword.useMutation();
 
-  const { data: user } = useSuspenseQuery(
-    trpc.users.getUser.queryOptions({ id: userId }),
-  );
+  const { data: user } = trpc.users.getUser.useSuspenseQuery({ id: userId });
 
   // invalidate the user query when the password is verified
   const invalidateUser = async () => {
-    await queryClient.invalidateQueries(
-      trpc.users.getUser.queryFilter({ id: userId }),
-    );
+    await utils.users.getUser.invalidate({ id: userId });
   };
 
   // Handle when user clicks the toggle
@@ -97,18 +80,16 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
           onSuccess: () => {
             applyTwoFactorChange();
           },
-          onError: (error) => {
+          onError: (_error) => {
             toast.error("Incorrect password", {
               description: "Please enter your correct password to continue",
             });
           },
-        },
-      ),
+        }
+      )
     );
 
     if (error) {
-      console.error(error);
-
       toast("Error", {
         description: "An error occurred while verifying your password",
       });
@@ -135,7 +116,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
               description: ctx.error.message,
             });
           },
-        },
+        }
       );
     } else {
       // Disable 2FA
@@ -155,7 +136,7 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
               description: ctx.error.message,
             });
           },
-        },
+        }
       );
     }
   };
@@ -181,14 +162,14 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
           </p>
         </div>
         <Switch
-          id="two-factor"
-          checked={user.twoFactorEnabled || false}
-          onCheckedChange={handleToggleClick}
+          checked={user.twoFactorEnabled}
           disabled={showPasswordField || verifyPasswordMutation.isPending}
+          id="two-factor"
+          onCheckedChange={handleToggleClick}
         />
       </div>
 
-      <Dialog open={showPasswordField} onOpenChange={setShowPasswordField}>
+      <Dialog onOpenChange={setShowPasswordField} open={showPasswordField}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Confirm with your password</DialogTitle>
@@ -202,33 +183,37 @@ const SecurityContent = ({ userId }: SecuritySettingsProps) => {
             <div className="space-y-2">
               <Label htmlFor="confirm-password">Password</Label>
               <Input
-                id="confirm-password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
+                id="confirm-password"
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                type="password"
+                value={password}
               />
             </div>
           </div>
 
           <DialogFooter>
             <Button
-              variant="outline"
-              onClick={handleCancel}
               disabled={verifyPasswordMutation.isPending}
+              onClick={handleCancel}
+              variant="outline"
             >
               Cancel
             </Button>
             <Button
-              onClick={handleVerifyAndApply}
               disabled={!password || verifyPasswordMutation.isPending}
+              onClick={handleVerifyAndApply}
             >
-              {verifyPasswordMutation.isPending
-                ? "Verifying..."
-                : targetState
-                  ? "Enable 2FA"
-                  : "Disable 2FA"}
+              {(() => {
+                if (verifyPasswordMutation.isPending) {
+                  return "Verifying...";
+                }
+                if (targetState) {
+                  return "Enable 2FA";
+                }
+                return "Disable 2FA";
+              })()}
             </Button>
           </DialogFooter>
         </DialogContent>
