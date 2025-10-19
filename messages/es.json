@@ -1,15 +1,15 @@
 {
-	"HomePage": {
-		"title": "¡Hola Mundo!",
-		"about": "Ir a la página de acerca de",
-		"mainHeading": "Plantilla de Inicio de Next.js",
-		"subHeading": "Una plantilla mínima para impulsar tus proyectos de Next.js.",
-		"getStartedButton": "Empezar",
-		"githubButton": "Github"
-	},
-	"localeSwitcher": {
-		"label": "Language",
-		"en": "English",
-		"de": "German"
-	}
+  "HomePage": {
+    "title": "¡Hola Mundo!",
+    "about": "Ir a la página de acerca de",
+    "mainHeading": "Plantilla de Inicio de Next.js",
+    "subHeading": "Una plantilla mínima para impulsar tus proyectos de Next.js.",
+    "getStartedButton": "Empezar",
+    "githubButton": "Github"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "de": "German"
+  }
 }

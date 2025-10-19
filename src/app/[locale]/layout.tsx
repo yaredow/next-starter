@@ -3,29 +3,29 @@ import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { Header } from "@/modules/home/ui/components/header";
 
-interface LocaleLayoutProps {
-	children: React.ReactNode;
-	params: Promise<{
-		locale: string;
-	}>;
-}
+type LocaleLayoutProps = {
+  children: React.ReactNode;
+  params: Promise<{
+    locale: string;
+  }>;
+};
 
 export default async function LocaleLayout({
-	children,
-	params,
+  children,
+  params,
 }: LocaleLayoutProps) {
-	const { locale } = await params;
+  const { locale } = await params;
 
-	if (!locale) {
-		notFound();
-	}
+  if (!locale) {
+    notFound();
+  }
 
-	setRequestLocale(locale);
+  setRequestLocale(locale);
 
-	return (
-		<NextIntlClientProvider>
-			<Header />
-			{children}
-		</NextIntlClientProvider>
-	);
+  return (
+    <NextIntlClientProvider>
+      <Header />
+      {children}
+    </NextIntlClientProvider>
+  );
 }

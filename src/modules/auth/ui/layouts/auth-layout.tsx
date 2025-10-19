@@ -1,7 +1,7 @@
-interface AuthLayoutProps {
-	children: React.ReactNode;
-}
-
-export const AuthLayout = ({ children }: AuthLayoutProps) => {
-	return <div className="min-h-screen w-full">{children}</div>;
+type AuthLayoutProps = {
+  children: React.ReactNode;
 };
+
+export const AuthLayout = ({ children }: AuthLayoutProps) => (
+  <div className="min-h-screen w-full">{children}</div>
+);

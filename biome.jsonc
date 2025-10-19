@@ -1,6 +1,42 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": [
-    "ultracite"
+  "extends": ["ultracite"],
+  "overrides": [
+    {
+      "includes": ["cypress/**/*.{js,jsx,ts,tsx}", "cypress.config.ts"],
+      "javascript": {
+        "globals": [
+          "cy",
+          "Cypress",
+          "describe",
+          "it",
+          "before",
+          "beforeEach",
+          "after",
+          "afterEach",
+          "expect"
+        ]
+      },
+      "linter": {
+        "rules": {
+          "style": {
+            "noNamespace": "off"
+          },
+          "nursery": {
+            "useConsistentTypeDefinitions": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.css"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noUnknownAtRules": "off"
+          }
+        }
+      }
+    }
   ]
 }

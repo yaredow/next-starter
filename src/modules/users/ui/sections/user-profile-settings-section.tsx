@@ -5,25 +5,23 @@ import { DangerZoneCard } from "../components/danger-zone-card";
 import { SecuritySettings } from "../components/security-settings";
 import { UpdatePersonalInformationSection } from "./update-personal-information-section";
 
-interface UserProfileSettingsSectionProps {
-	userId: string;
-}
+type UserProfileSettingsSectionProps = {
+  userId: string;
+};
 
 // Main component that renders immediately
 export const UserProfileSettingsSection = ({
-	userId,
-}: UserProfileSettingsSectionProps) => {
-	return (
-		<div className="container mx-auto py-10">
-			<div className="space-y-6">
-				<UpdatePersonalInformationSection userId={userId} />
+  userId,
+}: UserProfileSettingsSectionProps) => (
+  <div className="container mx-auto py-10">
+    <div className="space-y-6">
+      <UpdatePersonalInformationSection userId={userId} />
 
-				<UpdatePasswordForm />
+      <UpdatePasswordForm />
 
-				<SecuritySettings userId={userId} />
+      <SecuritySettings userId={userId} />
 
-				<DangerZoneCard />
-			</div>
-		</div>
-	);
-};
+      <DangerZoneCard />
+    </div>
+  </div>
+);

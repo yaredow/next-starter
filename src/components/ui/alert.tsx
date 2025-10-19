@@ -1,69 +1,66 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import type { HTMLAttributes, RefObject } from "react";
 
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-	"relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
-	{
-		variants: {
-			variant: {
-				default: "bg-background text-foreground",
-				destructive:
-					"border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
-			},
-		},
-		defaultVariants: {
-			variant: "default",
-		},
-	},
+  "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:top-4 [&>svg]:left-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
+  {
+    variants: {
+      variant: {
+        default: "bg-background text-foreground",
+        destructive:
+          "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
 );
 // add ref as well
-interface AlertProps
-	extends React.HTMLAttributes<HTMLDivElement>,
-		VariantProps<typeof alertVariants> {
-	ref?: React.Ref<HTMLDivElement>;
-}
+type AlertProps = HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof alertVariants> & {
+    ref?: RefObject<HTMLDivElement | null>;
+  };
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
-	({ className, variant, ...props }, ref) => (
-		<div
-			ref={ref}
-			role="alert"
-			className={cn(alertVariants({ variant }), className)}
-			{...props}
-		/>
-	),
+const Alert = ({ className, variant, ref, ...props }: AlertProps) => (
+  <div
+    className={cn(alertVariants({ variant }), className)}
+    ref={ref}
+    role="alert"
+    {...props}
+  />
 );
 Alert.displayName = "Alert";
 
 const AlertTitle = ({
-	ref,
-	className,
-	...props
-}: React.HTMLAttributes<HTMLHeadingElement> & {
-	ref: React.RefObject<HTMLParagraphElement>;
+  ref,
+  className,
+  ...props
+}: HTMLAttributes<HTMLHeadingElement> & {
+  ref: RefObject<HTMLParagraphElement>;
 }) => (
-	<h5
-		ref={ref}
-		className={cn("mb-1 font-medium leading-none tracking-tight", className)}
-		{...props}
-	/>
+  <h5
+    className={cn("mb-1 font-medium leading-none tracking-tight", className)}
+    ref={ref}
+    {...props}
+  />
 );
 AlertTitle.displayName = "AlertTitle";
 
 const AlertDescription = ({
-	ref,
-	className,
-	...props
-}: React.HTMLAttributes<HTMLParagraphElement> & {
-	ref: React.RefObject<HTMLParagraphElement>;
+  ref,
+  className,
+  ...props
+}: HTMLAttributes<HTMLParagraphElement> & {
+  ref: RefObject<HTMLParagraphElement>;
 }) => (
-	<div
-		ref={ref}
-		className={cn("text-sm [&_p]:leading-relaxed", className)}
-		{...props}
-	/>
+  <div
+    className={cn("text-sm [&_p]:leading-relaxed", className)}
+    ref={ref}
+    {...props}
+  />
 );
 AlertDescription.displayName = "AlertDescription";
 

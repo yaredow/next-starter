@@ -19,12 +19,14 @@
     "test:e2e:open": "concurrently -k \"pnpm dev\" \"sleep 10 && pnpm cy:open\"",
     "test:e2e:ci": "concurrently -k -s first \"pnpm dev\" \"sleep 10 && cypress run\"",
     "test:all": "pnpm test && pnpm test:e2e",
-    "lint": "next lint",
+    "lint": "eslint .",
     "email:dev": "email dev --dir src/emails",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "uc:check": "ultracite check",
+    "uc:fix": "ultracite fix"
   },
   "dependencies": {
     "@better-auth/stripe": "^1.3.27",
@@ -106,6 +108,8 @@
     "@types/react-dom": "19.2.2",
     "@types/uuid": "^11.0.0",
     "drizzle-kit": "^0.31.5",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "15.5.6",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "tailwindcss": "^4.1.14",

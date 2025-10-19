@@ -1,53 +1,58 @@
 "use client";
 
-import * as AvatarPrimitive from "@radix-ui/react-avatar";
-import type * as React from "react";
+import {
+  Fallback as AvatarFallback,
+  Image as AvatarImage,
+  Root as AvatarRoot,
+} from "@radix-ui/react-avatar";
+import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
 
-function Avatar({
-	className,
-	...props
-}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
-	return (
-		<AvatarPrimitive.Root
-			data-slot="avatar"
-			className={cn(
-				"relative flex size-8 shrink-0 overflow-hidden rounded-full",
-				className,
-			)}
-			{...props}
-		/>
-	);
+function Avatar({ className, ...props }: ComponentProps<typeof AvatarRoot>) {
+  return (
+    <AvatarRoot
+      className={cn(
+        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        className
+      )}
+      data-slot="avatar"
+      {...props}
+    />
+  );
 }
 
-function AvatarImage({
-	className,
-	...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-	return (
-		<AvatarPrimitive.Image
-			data-slot="avatar-image"
-			className={cn("aspect-square size-full", className)}
-			{...props}
-		/>
-	);
+function AvatarImageComponent({
+  className,
+  ...props
+}: ComponentProps<typeof AvatarImage>) {
+  return (
+    <AvatarImage
+      className={cn("aspect-square size-full", className)}
+      data-slot="avatar-image"
+      {...props}
+    />
+  );
 }
 
-function AvatarFallback({
-	className,
-	...props
-}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
-	return (
-		<AvatarPrimitive.Fallback
-			data-slot="avatar-fallback"
-			className={cn(
-				"bg-muted flex size-full items-center justify-center rounded-full",
-				className,
-			)}
-			{...props}
-		/>
-	);
+function AvatarFallbackComponent({
+  className,
+  ...props
+}: ComponentProps<typeof AvatarFallback>) {
+  return (
+    <AvatarFallback
+      className={cn(
+        "flex size-full items-center justify-center rounded-full bg-muted",
+        className
+      )}
+      data-slot="avatar-fallback"
+      {...props}
+    />
+  );
 }
 
-export { Avatar, AvatarImage, AvatarFallback };
+export {
+  Avatar,
+  AvatarImageComponent as AvatarImage,
+  AvatarFallbackComponent as AvatarFallback,
+};

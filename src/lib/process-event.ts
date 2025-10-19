@@ -2,19 +2,21 @@ import type { Stripe } from "stripe";
 
 import { allowedEvents } from "@/modules/subscription/constants";
 
-const handleInvoicePaid = (event: Stripe.Event) => {
-	console.log("Invoice paid event received", event);
+const handleInvoicePaid = (_event: Stripe.Event) => {
+  // TODO: Implement invoice paid handler
 };
 
-export async function handleStripeEvents(event: Stripe.Event): Promise<void> {
-	if (!allowedEvents.includes(event.type)) return;
-	const eventType = event.type;
+export function handleStripeEvents(event: Stripe.Event): void {
+  if (!allowedEvents.includes(event.type)) {
+    return;
+  }
+  const eventType = event.type;
 
-	switch (eventType) {
-		case "invoice.paid":
-			//Handle paid invoice
-			handleInvoicePaid(event);
-			break;
-		default:
-	}
+  switch (eventType) {
+    case "invoice.paid":
+      //Handle paid invoice
+      handleInvoicePaid(event);
+      break;
+    default:
+  }
 }
