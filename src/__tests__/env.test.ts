@@ -217,12 +217,12 @@ describe("getRequiredEnv", () => {
       process.env.NODE_ENV = undefined;
       process.env.GOOGLE_CLIENT_ID = undefined;
       expect(getRequiredEnv("GOOGLE_CLIENT_ID")).toBe("");
-      
+
       // Test when NODE_ENV is empty string
       process.env.NODE_ENV = "";
       process.env.GOOGLE_CLIENT_ID = undefined;
       expect(getRequiredEnv("GOOGLE_CLIENT_ID")).toBe("");
-      
+
       // Test when NODE_ENV is some other value
       process.env.NODE_ENV = "staging";
       process.env.GOOGLE_CLIENT_ID = undefined;
