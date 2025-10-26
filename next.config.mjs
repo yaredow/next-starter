@@ -3,6 +3,7 @@
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig = {
+  reactCompiler: true,
   images: {
     remotePatterns: [
       { hostname: "lh3.googleusercontent.com" },
