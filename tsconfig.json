@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -10,8 +14,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "types": ["@testing-library/jest-dom", "cypress"],
+    "jsx": "react-jsx",
+    "types": [
+      "@testing-library/jest-dom",
+      "cypress"
+    ],
     "incremental": true,
     "plugins": [
       {
@@ -19,7 +26,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     "target": "ES2017"
   },
@@ -28,7 +37,12 @@
     "**/*.ts",
     "./src/**/**.*",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "./cypress", "./cypress.config.ts"]
+  "exclude": [
+    "node_modules",
+    "./cypress",
+    "./cypress.config.ts"
+  ]
 }
